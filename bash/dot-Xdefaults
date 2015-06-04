@@ -1,0 +1,70 @@
+!!=============================================================================
+!! X11 Resources
+!! Jay Windley
+!! 27 Aug 96
+!!=============================================================================
+
+#define BASIC_FONT 8x13
+
+!
+! Default resources
+!
+!*borderWidth:				0
+!*menuFreeze:				on
+!*paneFont:				BASIC_FONT
+!*selectionFont:				BASIC_FONT
+!*selectionBorder:			Red
+!*paneBorderWidth:			1
+!*makeWindow.ClipToScreen:		on
+!*pointerColor:				Red
+!*cursorColor:				Red
+!*highlight:				White
+!*foreground:				#003366
+
+!
+! Emacs
+!
+Emacs.geometry:			=110x60+1+1
+Emacs.background:		#f4f0f0
+Emacs.foreground:		Gray10
+! Emacs*borderColor:		Gray50
+Emacs.cursorColor:		Red
+Emacs.pointerColor:		DarkRed
+!Emacs.font:                     Bitstream Vera Sans Mono-10
+!Emacs.font:                     DejaVu LGC Sans Mono-9
+Emacs.font:                     Mono-9
+
+!
+! Emacs typeface attributes
+!
+Emacs.modeline.attributeForeground:                     DarkRed
+Emacs.modeline.attributeBackground:                     Gray75
+Emacs.region.attributeForeground:                       Black
+Emacs.region.attributeBackground:                       Orange
+Emacs.secondary-selection.attributeForeground:          white
+Emacs.secondary-selection.attributeBackground:          DimGray
+
+! Comments
+Emacs.font-lock-comment-face.attributeForeground:       #808090
+Emacs.font-lock-comment-face.attributeItalic:           on
+
+! Type identifiers
+Emacs.font-lock-type-face.attributeForeground:		gray10
+
+! Function names
+Emacs.font-lock-function-name-face.attributeForeground: #0000cf
+Emacs.font-lock-function-name-face.attributeBold:	off
+
+! Keywords
+Emacs.font-lock-keyword-face.attributeForeground:	Black
+Emacs.font-lock-keyword-face.attributeBold:             on
+
+! Builtin
+Emacs.font-lock-builtin-face.attributeForeground:       #581263
+Emacs.font-lock-builtin-face.attributeBold:		off
+
+! String literals
+Emacs.font-lock-string-face.attributeForeground:        gray40
+
+! Variable names
+Emacs.font-lock-variable-name-face.attributeForeground:	#2f5363

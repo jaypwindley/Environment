@@ -1,0 +1,294 @@
+// *********************************************************************
+//
+// ls --colors database, used by dircolors to generate shell
+// configuration commands.  This must be parsed by the C preprocessor,
+// as in
+//
+//   $ eval `/lib/cpp -E ~/.dircolors | dircolors`
+//
+// *********************************************************************
+
+//
+// Terminal definitions.
+//
+TERM Eterm
+TERM ansi
+TERM color-xterm
+TERM con132x25
+TERM con132x30
+TERM con132x43
+TERM con132x60
+TERM con80x25
+TERM con80x28
+TERM con80x30
+TERM con80x43
+TERM con80x50
+TERM con80x60
+TERM cons25
+TERM console
+TERM cygwin
+TERM dtterm
+TERM eterm-color
+TERM gnome
+TERM gnome-256color
+TERM konsole
+TERM kterm
+TERM linux
+TERM linux-c
+TERM mach-color
+TERM mlterm
+TERM putty
+TERM rxvt
+TERM rxvt-cygwin
+TERM rxvt-cygwin-native
+TERM rxvt-unicode
+TERM screen
+TERM screen-256color
+TERM screen-bce
+TERM screen-w
+TERM screen.linux
+TERM vt100
+TERM xterm
+TERM xterm-16color
+TERM xterm-256color
+TERM xterm-88color
+TERM xterm-color
+TERM xterm-debian
+
+// *********************************************************************
+// A color string consists of one or more of the following numeric
+// codes separated by ; with no intervening white space.
+//
+// Attribute codes (may be combined where compatible):
+//   00 plain             (default; may be omitted)
+//   01 bold
+//   04 underscore
+//   05 blink             (inoperative)
+//   07 reverse
+//   08 hidden            (pointless and annoying)
+//
+// Text color codes:
+//   30 black             (default; may be omitted)
+//   31 red
+//   32 green
+//   33 yellow
+//   34 blue
+//   35 magenta
+//   36 cyan
+//   37 white
+//
+// Background color codes (default is transparent):
+//   40 black
+//   41 red
+//   42 green
+//   43 yellow
+//   44 blue
+//   45 magenta
+//   46 cyan
+//   47 white
+//
+// *********************************************************************
+
+#define A_PLAIN		00
+#define A_BOLD		01
+#define A_UNDERSCORE	04
+#define A_REVERSE	07
+#define A_HIDDEN	08
+
+#define C_BLACK		30
+#define C_RED		31
+#define C_GREEN		32
+#define C_YELLOW	33
+#define C_BLUE		34
+#define C_MAGENTA	35
+#define C_CYAN		36
+#define C_WHITE		37
+
+#define B_BLACK		40
+#define B_RED		41
+#define B_GREEN		42
+#define B_YELLOW	43
+#define B_BLUE		44
+#define B_MAGENTA	45
+#define B_CYAN		46
+#define B_WHITE		47
+
+//
+// File types (see suffix lists below)
+//
+#define F_ARCHIVE	A_PLAIN
+#define F_AUDIO		A_PLAIN
+#define F_CONFIG	A_PLAIN
+#define F_DIR		A_UNDERSCORE
+#define F_DOC		A_PLAIN
+#define F_OBJECT	C_CYAN
+#define F_PICTURE	A_PLAIN
+#define F_SCRIPT	A_PLAIN
+#define F_SOURCE	A_PLAIN
+#define F_VIDEO		A_PLAIN
+
+//
+// Built-in stat(2) bits
+//
+NORMAL           A_PLAIN            # default
+FILE             A_PLAIN            # normal file
+DIR              F_DIR              # directory
+LINK             C_BLUE             # symbolic link
+FIFO             C_YELLOW;B_BLACK   # pipe
+SOCK             C_YELLOW;B_BLACK   # socket
+DOOR             C_YELLOW;B_BLACK   # door
+BLK              A_PLAIN            # block device driver
+CHR              A_PLAIN            # character device driver
+ORPHAN           C_RED;A_REVERSE;A_BOLD	  # symlink to nonexistent file, or non-statable file
+SETUID           C_RED              # file that is setuid (u+s)
+SETGID           C_RED              # file that is setgid (g+s)
+CAPABILITY       C_RED              # file with capability
+OTHER_WRITABLE   C_RED;A_BOLD       # dir that is other-writable (o+w) and not sticky
+STICKY           F_DIR              # dir with the sticky bit set (+t) and not other-writable
+EXEC             C_MAGENTA          # file with execute permission
+
+
+// *********************************************************************
+//
+// Lists of individual file suffixes and the color schemes that apply.
+//
+// *********************************************************************
+
+//
+// Documents
+//
+.pdf	F_DOC			# Adobe Portable Document Format
+.odt	F_DOC			# Open Office document
+
+//
+// Scripts and scripted modules
+//
+.pl     F_SCRIPT		# Perl script
+.pm     F_SCRIPT		# Perl module
+.php	F_SCRIPT   	    # PHP script
+.inc	F_SCRIPT   	    # PHP module
+.py	    F_SCRIPT		# Python script
+.sql	F_SCRIPT		# SQL script
+.make	F_SCRIPT		# Makefile
+.sh	    F_SCRIPT		# Shell script
+
+//
+// Compilable source code
+//
+.c	    F_SOURCE		# C source
+.c++	F_SOURCE		# C++ source
+.cpp	F_SOURCE		# C++ source
+.h	    F_SOURCE		# C/C++ header
+.j	    F_SOURCE		# Java source
+.java	F_SOURCE		# Java source
+.el	    F_SOURCE		# Emacs LISP
+
+
+//
+// Compiled objects
+//
+.o	    F_OBJECT
+.s	    F_OBJECT
+.elc	F_OBJECT
+.a	    F_OBJECT
+.so	    F_OBJECT
+.pyc	F_OBJECT
+
+//
+// Configuration files
+//
+.ini	F_CONFIG
+.conf	F_CONFIG
+.cron	F_CONFIG
+
+//
+// Archives
+//
+.tar	F_ARCHIVE
+.tgz	F_ARCHIVE
+.svgz	F_ARCHIVE
+.arj	F_ARCHIVE
+.taz	F_ARCHIVE
+.lzh	F_ARCHIVE
+.lzma	F_ARCHIVE
+.zip	F_ARCHIVE
+.z	    F_ARCHIVE
+.Z	    F_ARCHIVE
+.dz	    F_ARCHIVE
+.gz	    F_ARCHIVE
+.bz2	F_ARCHIVE
+.bz	    F_ARCHIVE
+.tbz2	F_ARCHIVE
+.tz	    F_ARCHIVE
+.deb	F_ARCHIVE
+.rpm	F_ARCHIVE
+.jar	F_ARCHIVE
+.rar	F_ARCHIVE
+.ace	F_ARCHIVE
+.zoo	F_ARCHIVE
+.cpio	F_ARCHIVE
+.7z	    F_ARCHIVE
+.rz	    F_ARCHIVE
+
+//
+// Pictures
+//
+.jpg	F_PICTURE
+.jpeg	F_PICTURE
+.gif	F_PICTURE
+.bmp	F_PICTURE
+.pbm	F_PICTURE
+.pgm	F_PICTURE
+.ppm	F_PICTURE
+.tga	F_PICTURE
+.xbm	F_PICTURE
+.xpm	F_PICTURE
+.tif	F_PICTURE
+.tiff	F_PICTURE
+.png	F_PICTURE
+.svg	F_PICTURE
+.mng	F_PICTURE
+.pcx	F_PICTURE
+
+//
+// Video
+//
+.mov	F_VIDEO
+.mpg	F_VIDEO
+.mpeg	F_VIDEO
+.m2v	F_VIDEO
+.mkv	F_VIDEO
+.ogm	F_VIDEO
+.mp4	F_VIDEO
+.m4v	F_VIDEO
+.mp4v	F_VIDEO
+.vob	F_VIDEO
+.qt	    F_VIDEO
+.nuv	F_VIDEO
+.wmv	F_VIDEO
+.asf	F_VIDEO
+.rm	    F_VIDEO
+.rmvb	F_VIDEO
+.flc	F_VIDEO
+.avi	F_VIDEO
+.fli	F_VIDEO
+.gl	    F_VIDEO
+.dl	    F_VIDEO
+.xcf	F_VIDEO
+.xwd	F_VIDEO
+.yuv	F_VIDEO
+
+//
+// Audio
+//
+.aac	F_AUDIO
+.au	    F_AUDIO
+.flac	F_AUDIO
+.mid	F_AUDIO
+.midi	F_AUDIO
+.mka	F_AUDIO
+.mp3	F_AUDIO
+.mpc	F_AUDIO
+.ogg	F_AUDIO
+.ra	    F_AUDIO
+.wav	F_AUDIO

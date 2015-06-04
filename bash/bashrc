@@ -1,0 +1,271 @@
+#!/bin/bash
+########################################################################
+#
+# bash(1) run commands.
+#
+#######################################################################
+
+#
+#  bash(1) completion -- stored in different places
+#      <dir> bash_completion     - basic script
+#      <dir> bash_completion.d/* - scripts for each command
+#  xterm(1) titles
+#  respect bash-doc supplementary files
+#      .bash_aliases
+#      .bash_vars(?)
+#      .bash_(underscore is the standard)
+#      .bashrc.d
+#  standardize color prompts (see bashrc.debian)
+#  parameterize aliases with --color=auto where possible
+#
+
+#
+# If not running interactively, don't do anything.
+#
+case $- in
+    *i*) ;;             # interactive flag set
+      *) return;;
+esac
+
+#
+# Source global definitions
+#
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+#-----------------------------------------------------------------------
+#
+#                              History
+#
+#-----------------------------------------------------------------------
+
+HISTCONTROL=ignoreboth
+HISTSIZE=1000
+HISTFILESIZE=2000
+shopt -s histappend
+
+
+#-----------------------------------------------------------------------
+#
+#                             Environment
+#
+#-----------------------------------------------------------------------
+
+#
+# Include system administration and user programs in path.  Even
+# though they are typically meant only for superuser use, some
+# programs work fine and are helpful in in normal user space.
+#
+export PATH=$PATH:/usr/local/bin:/usr/local/sbin:/sbin:/usr/sbin:$HOME/bin
+
+#
+# Individual program variables.
+#
+
+# Less(1) draws its input through an input filter that adds syntax
+# coloring.
+#
+export LESS="-x4"
+if [ -d "/usr/share/source-highlight" ]; then
+    LESS="$LESS -R"
+    export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
+fi
+
+# Local machine development support.
+export TARGET_LIBDIR=$HOME/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TARGET_LIB
+
+# For Emacs.
+export REALNAME="Jay Windley"
+# export COPYRIGHT=""        must be defined to keep Emacs happy but
+#                            should be defined locally.
+
+# Identify preferred applications
+export BROWSER="firefox:x-www-browser"
+
+# Add local defintions.
+[ -e ~/.bash_vars ] && source ~/.bash_vars
+
+
+
+#-----------------------------------------------------------------------
+#
+#                       Cosmetic behavior
+#
+#-----------------------------------------------------------------------
+
+#
+# Read the dircolors database for the ls(1) command.
+#
+# This requires cpp(1) to be installed on the host, which is not often
+# there (especially on production public-facing servers).  So process
+# the source file if it exists, but consult a statically-compiled one
+# as a fallback.
+#
+dir_static=~/.dircolors-static
+if [ -x /lib/cpp ]; then
+    dir_output=/tmp/dircolors.$$
+    /lib/cpp -E ~/.dircolors > $dir_output
+    eval `dircolors "$dir_output"`
+    cp $dir_output $dir_static
+    rm -f $dir_output
+else
+    [ -e "$dir_static" ] && eval `dircolors ~/.dircolors-static`
+fi
+
+
+#
+# Prompt strings - functions and settings
+#
+
+#-----------------------------------------------------------------------
+# If the exit code of the last command is non-zero, return the exit code
+# in square brackets, else return nothing.  Used in the prompt string to
+# conditionally print the exit code.
+#
+function bad_exit {
+    local rc=$?
+    if [ $rc != "0" ]; then
+	echo \[$rc\]
+    fi
+}
+
+
+#-----------------------------------------------------------------------
+# Return "~" if the CWD is a subdirectory of $HOME.
+#
+function cwd_prefix
+{
+    if [ $(echo ${PWD} | cut -b -${#HOME}) == "$HOME" ]; then
+	echo '~'
+    fi
+}
+
+
+#-----------------------------------------------------------------------
+# Return the relative pathname of the current working directory,
+# relative to home, or the absolute pathname of the current working
+# directory if it is not $HOME-relative.
+#
+function cwd_strip_home
+{
+    echo ${PWD} | sed -e "s_${HOME}__"
+}
+
+
+#-----------------------------------------------------------------------
+# Return an ellipsis character if the CWD pathname is longer than
+# $maxlen.
+#
+function cwd_abbr
+{
+    local maxlen=$1
+    local path=$(cwd_strip_home)
+    if [ ${#path} -gt $maxlen ]; then
+	echo -n -e "/\xE2\x80\xA6"         # Unicode ellipsis
+    fi
+}
+
+
+#-----------------------------------------------------------------------
+# Return the rightmost ${1}-or-less characters of the CWD path after
+# replacing $HOME prefix with "~", if appropriate.  If the rightmost
+# single path element is longer than $maxlen, return it regardless of
+# length.
+#
+function cwd_tail
+{    
+    local maxlen=$1
+    local path=$(cwd_strip_home)
+
+    # if the remainder is longer than $maxlen, shorten it.
+    if [ ${#path} -gt $maxlen ]; then
+
+	# Tail is either $HOME-relative or absolute, but either way
+	# starts with "/".
+	#
+	local tail=${path}
+
+	# Strip leading path elements until the tail is either short
+	# enough or gone altogether.
+	#
+	while [ \( ${#tail} -gt 0 \) -a \( ${#tail} -gt $maxlen \) ]; do
+	    tail=$(echo $tail | sed -re s_^/[^/]+__)
+	done
+
+	# If now gone altogether, restore the last path element no
+	# matter how long.
+	#
+	if [ ${#tail} -eq 0 ]; then
+	    tail=/$(basename "$path")
+	fi
+	echo $tail
+    else
+	echo $path
+    fi
+}
+
+# TODO put these in a color scheme specific file.
+col_user="\033[38;5;30m"        # color for 'user@host'
+col_exit="\033[1;31m"           # color for optional nonzero exit status
+col_path_prefix="\033[0;37m"    # color for path prefix, e.g., ~
+col_path_abbr="\033[38;5;11m"   # color for optional abbreviation
+col_path_tail="\033[38;5;240m"  # color for path tail
+col_path_prompt="$col_user"     # color for prompt character
+
+path_tail_len=15                # length of path tail.
+
+#
+# Here is the complexity of PS1, and of bash(1) prompt strings in general.
+# The value embeds some built-in control characters, but then also
+# accepts escaped terminal control sequences.  These must all be
+# carefully quoted and escaped.
+#
+# The pattern of single and double quotes is intentional and subtley
+# vital.  Single quotes preserve the callouts via $() so that they are
+# executed at each prompt, not simply once when PS1's value is set
+# below.  However, enclosing the whole thing in single quotes causes the
+# escape sequences that set color to be included in the string length of
+# PS1's value that bash(1) uses to know when to wrap the line and do
+# other line-editing tasks.
+#
+# PS1 begins with the prosaic user@host.  If the exit status of the last
+# command was non-zero, it is displayed next in brackets.  Then the CWD
+# is presented with HOME abbreviated ~ as is customary; the tail of the
+# path only is presented, and where abbreviated an ellipsis takes the
+# place of omitted leading path elements.  Then the bash(1)-determined
+# prompt string, $ for ordinary permissions and # for root.
+#
+PS1=\
+"\[${col_user}\]\u@\h\[${col_exit}\]"'$(bad_exit)'\
+"\[${col_path_prefix}\]:"'$(cwd_prefix)'\
+"\[${col_path_abbr}\]"'$(cwd_abbr $path_tail_len)'\
+"\[${col_path_tail}\]"'$(cwd_tail $path_tail_len)'\
+"\[${col_path_prompt}\]\$\[\033[00m\] "
+
+PS2="$(echo -e -n "\xE2\x8A\xA6") "
+
+# Force LINES and COLUMNS reset upon window resize.
+shopt -s checkwinsize
+
+
+#-----------------------------------------------------------------------
+#
+#                      Aliases
+#
+#-----------------------------------------------------------------------
+
+alias ls='ls -L -B -h --color=auto'
+alias la='/bin/ls -A -h -F --color=none'
+alias ll='/bin/ls -l -h -F --color=auto'
+
+# Add any local aliases.
+[ -e ~/.bash_aliases ] && source ~/.bash_aliases
+
+# Add any final local scripts.
+if [ -d ~/.bashrc.d ]; then
+    for f in ~/.bashrc.d/*; do
+	. $f
+    done
+fi

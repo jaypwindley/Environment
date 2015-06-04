@@ -1,0 +1,3 @@
+#!/bin/bash
+
+export DESKTOP_COLOR_SCHEME="dark"

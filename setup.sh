@@ -5,7 +5,9 @@ HERE=${PWD}
 # Follow user's predetermined method of backups.
 export VERSION_CONTROL=existing
 
-alias make_link='ln -f -s -b'
+function make_link {
+    ln -f -s -b "$1" "$2"
+}
 
 # Shell / Bash
 echo -n "Setting up Bash and shell..."

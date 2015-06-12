@@ -256,7 +256,7 @@ shopt -s checkwinsize
 #
 #-----------------------------------------------------------------------
 
-alias ls='ls -L -B -h --color=auto'
+alias ls='ls -L -h --color=auto'
 alias la='/bin/ls -A -h -F --color=none'
 alias ll='/bin/ls -l -h -F --color=auto'
 

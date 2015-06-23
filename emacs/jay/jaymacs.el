@@ -92,6 +92,8 @@
 (global-set-key [(f3)]             'find-file-other-window)
 (global-set-key [(C-f3)]           (lambda () (interactive) (kill-buffer nil)))
 (global-set-key [(f4)]             'set-mark-command)
+(global-set-key [mouse-8]          'beginning-of-buffer)
+(global-set-key [mouse-10]         'end-of-buffer)
 
 
 ;;

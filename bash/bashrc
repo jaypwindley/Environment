@@ -133,6 +133,16 @@ function bad_exit {
 
 
 #-----------------------------------------------------------------------
+# if any of the chroot(1) environment variables are set, return the name
+# of the chroot.
+#
+function chroot_name {
+    if [ -n "$SCHROOT_CHROOT_NAME" ]; then
+	echo -n -e " \xE2\x96\xBA"$SCHROOT_CHROOT_NAME
+    fi
+}
+
+#-----------------------------------------------------------------------
 # Return "~" if the CWD is a subdirectory of $HOME.
 #
 function cwd_prefix
@@ -206,15 +216,28 @@ function cwd_tail
     fi
 }
 
+# Quick key:
+#  ESC is \033
+#  reset attributes ESC [0m
+#  bold             ESC [1m
+#  italic           ESC [3m
+#  underline        ESC [4m
+#  ANSI color       ESC [30...37m
+#  theme color      ESC [38;5;Xm        X = [0,255]
+#  RGB color        ESC [38;2;R;G;Bm    R,G,B = [0,255]
+#     " for bg           48
+#
 # TODO put these in a color scheme specific file.
-col_user="\033[38;5;30m"        # color for 'user@host'
-col_exit="\033[1;31m"           # color for optional nonzero exit status
-col_path_prefix="\033[0;37m"    # color for path prefix, e.g., ~
-col_path_abbr="\033[38;5;11m"   # color for optional abbreviation
-col_path_tail="\033[38;5;240m"  # color for path tail
-col_path_prompt="$col_user"     # color for prompt character
+col_reset="\033[1m"                   # reset all attributes
+col_exit="\033[38;2;255;0;0m"         # color for nonzero exit status
+col_user="\033[0m\033[38;5;30m"       # color for 'user@host'
+col_chroot="\033[1m"
+col_path_prefix="\033[0;37m"          # color for path prefix, e.g., ~
+col_path_abbr="\033[38;2;220;240;0m"  # color for optional abbreviation
+col_path_tail="\033[38;5;240m"        # color for path tail
+col_path_prompt="$col_user"           # color for prompt character
 
-path_tail_len=15                # length of path tail.
+path_tail_len=15                    # length of path tail.
 
 #
 # Here is the complexity of PS1, and of bash(1) prompt strings in general.
@@ -231,14 +254,17 @@ path_tail_len=15                # length of path tail.
 # other line-editing tasks.
 #
 # PS1 begins with the prosaic user@host.  If the exit status of the last
-# command was non-zero, it is displayed next in brackets.  Then the CWD
-# is presented with HOME abbreviated ~ as is customary; the tail of the
-# path only is presented, and where abbreviated an ellipsis takes the
-# place of omitted leading path elements.  Then the bash(1)-determined
-# prompt string, $ for ordinary permissions and # for root.
+# command was non-zero, it is displayed first in brackets.  If a chroot
+# is in effect, the name of the chroot appears in parentheses.  Then the
+# CWD is presented with HOME abbreviated ~ as is customary; the tail of
+# the path only is presented, and where abbreviated an ellipsis takes
+# the place of omitted leading path elements.  Then the
+# bash(1)-determined prompt string, $ for ordinary permissions and # for
+# root.
 #
 PS1=\
-"\[${col_user}\]\u@\h\[${col_exit}\]"'$(bad_exit)'\
+"\[${col_exit}\]"'$(bad_exit)'"\[${col_reset}\]\[${col_user}\]\u@\h"\
+"\[${col_chroot}\]"'$(chroot_name)'"\[${col_reset}\]"\
 "\[${col_path_prefix}\]:"'$(cwd_prefix)'\
 "\[${col_path_abbr}\]"'$(cwd_abbr $path_tail_len)'\
 "\[${col_path_tail}\]"'$(cwd_tail $path_tail_len)'\

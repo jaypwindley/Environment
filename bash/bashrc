@@ -216,6 +216,8 @@ function cwd_tail
     fi
 }
 
+# Escape sequences for color
+#
 # Quick key:
 #  ESC is \033
 #  reset attributes ESC [0m
@@ -229,13 +231,13 @@ function cwd_tail
 #
 # TODO put these in a color scheme specific file.
 col_reset="\033[1m"                   # reset all attributes
-col_exit="\033[38;2;255;0;0m"         # color for nonzero exit status
-col_user="\033[0m\033[38;5;30m"       # color for 'user@host'
-col_chroot="\033[1m"
-col_path_prefix="\033[0;37m"          # color for path prefix, e.g., ~
-col_path_abbr="\033[38;2;220;240;0m"  # color for optional abbreviation
-col_path_tail="\033[38;5;240m"        # color for path tail
-col_path_prompt="$col_user"           # color for prompt character
+col_exit="\033[1m\033[38;2;255;0;0m"  # nonzero exit status
+col_user="\033[0m\033[38;5;30m"       # 'user@host'
+col_chroot="\033[1m"                  # name of schroot
+col_path_prefix="\033[0;37m"          # path prefix, e.g., ~
+col_path_abbr="\033[38;2;220;240;0m"  # optional abbreviation
+col_path_tail="\033[38;5;240m"        # path tail
+col_path_prompt="$col_user"           # prompt character
 
 path_tail_len=15                    # length of path tail.
 

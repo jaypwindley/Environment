@@ -11,7 +11,7 @@
   "Jay's theme for dark color schemes.")
 
 (let ((class '((class color) (min-colors 89)))
-      (bg          "#002B36")
+      (bg          "#2F4047")
       (bglight     "#003B46")
       (ltfirebrick "#ff8888")
       (firebrick   "#ff6666")

@@ -18,7 +18,9 @@ if [ ! -d $gfdir ]; then       # bootstrap Mercurial
     mkdir -p $gfdir
     hg clone https://googlefontdirectory.googlecode.com/hg/ $gfdir > /dev/null
 fi
+
+cd "$gfdir"
 hg pull $gfdir > /dev/null     # Mercurial synch
 
 # Copy into per-user font directory.
-find $gfdir -iname "*.otf" -o -iname "*.ttf" -exec cp {} $fdir \;
+find . -iname "*.otf" -o -iname "*.ttf" -exec cp {} $fdir \;

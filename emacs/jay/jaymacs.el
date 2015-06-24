@@ -38,6 +38,19 @@
 	 (add-to-list 'custom-theme-load-path "~/.emacs.d/jay")
 	 (load-theme 'jaydark t))))
 
+;;
+;; Set transparency
+;;
+(let ((active-alpha 80)
+       (inactive-alpha 65))
+  (set-frame-parameter (selected-frame) 'alpha
+		       (list active-alpha inactive-alpha))
+  (add-to-list 'default-frame-alist
+	       (list 'alpha active-alpha inactive-alpha)))
+
+
+
+
 
 
 ;;-----------------------------------------------------------------------------

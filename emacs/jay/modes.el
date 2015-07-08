@@ -43,7 +43,7 @@
 	 bash-mode-hook
 	 emacs-lisp-mode-hook
 	 ))
-(global-set-key [(f12)] (lambda () (load "~/.emacs.d/jay/dev")))
+(global-set-key [(f12)] (lambda () (load-file "~/.emacs.d/jay/dev")))
 
 ;;
 ;; Every time a file is loaded, turn on font-lock and fontify the
@@ -64,11 +64,12 @@
 	     (text-mode-hook-identify)))
 
 ;;
-;; C and C++ modes get Kernighan and Ritchie style plus tab stops of 4.
+;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup
+;; style, depending on context, plus tab stops of 4.
 ;;
 (add-hook 'c-mode-hook
 	  '(lambda ()
-	     (c-set-style "K&R")
+	     (c-set-style "stroustrup")
 	     (setq c-basic-offset 4)
 	     (setq c-tab-always-indent nil)
 	     (setq tab-width 4)

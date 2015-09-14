@@ -69,7 +69,7 @@
 ;;
 (add-hook 'c-mode-hook
 	  '(lambda ()
-	     (c-set-style "stroustrup")
+	     (c-set-style (getenv-with-default "EMACS_C_STYLE" "K&R"))
 	     (setq c-basic-offset 4)
 	     (setq c-tab-always-indent nil)
 	     (setq tab-width 4)
@@ -77,6 +77,7 @@
 
 (add-hook 'c++-mode-hook
 	  '(lambda ()
+	     (c-set-style (getenv-with-default "EMACS_C_STYLE" "K&R"))
 	     (setq-default tab-width 4)
 	     (setq-default c-tab-always-indent nil)
 	     (setq-default indent-tabs-mode nil)

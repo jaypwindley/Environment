@@ -24,6 +24,7 @@
       (yellow      "#f8ec59")
       (blue        "#0072b2")
       (vermillion  "#d55e00")
+      (lime        "#008080")
       (redpurple   "#cc79a7")
       (bluegray    "#848ea9"))
   
@@ -113,7 +114,7 @@
    
    `(font-lock-constant-face ((,class (
 	  :weight     bold
-	  :foreground ,vermillion))))
+	  :foreground ,lime))))
    
    `(font-lock-function-name-face ((,class (
 	  :foreground ,firebrick
@@ -139,7 +140,7 @@
   (custom-theme-set-variables
    'jaydark
    `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow
-			      ,blue ,redpurple ,skyblue "white"])))
+			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"])))
 
 (provide-theme 'jaydark)
 

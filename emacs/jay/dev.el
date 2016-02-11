@@ -11,6 +11,7 @@
 
 (linum-mode 1)
 (ruler-mode 1)
+(set-fill-column 100)
 
 (defvar jay-date-time "Date and time for source file time stamps.")
 
@@ -127,7 +128,9 @@ comment-start                                                                   
 ; F5   function comments       variable comments            file comments
 ; F6   check out file          save file and check in
 ; F8   expand abbreviation
+; F9   replace string
 
 (global-set-key [(f5)]     'jay-function-short-comment)
 (global-set-key [(M-f5)]   'jay-file-header-comment)
 (global-set-key [(f8)]     'dabbrev-expand)
+(global-set-key [(f9)]     'replace-string)

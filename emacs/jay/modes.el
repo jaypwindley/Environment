@@ -66,6 +66,19 @@
 	     (text-mode-hook-identify)))
 
 ;;
+;; Assembly mode gets modified behavior if it's editing IBM HLASM code,
+;; which we arbitrarily decide will have the .asm suffix.  The .s suffix
+;; invokes Eric Raymond's original assembly mode for GNU-type assemblers.
+;;
+(add-hook 'asm-mode-hook
+	  '(lambda()
+	     (cond
+	      ((string-equal
+		(file-name-extension
+		 (file-name-nondirectory buffer-file-name)) "asm")
+	       (load "~/.emacs.d/jay/hlasm-mode")))))
+
+;;
 ;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup
 ;; style, depending on context, plus tab stops of 4.
 ;;

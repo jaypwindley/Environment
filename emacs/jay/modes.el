@@ -35,8 +35,10 @@
 ;;
 (mapc (lambda (mode-hook)
 	(add-hook mode-hook (lambda () (load "~/.emacs.d/jay/dev"))))
-      '( c-mode-hook
+      '( asm-mode-hook
+	 c-mode-hook
 	 c++-mode-hook
+	 fortran-mode-hook
 	 python-mode-hook
 	 perl-mode-hook
 	 sh-mode-hook
@@ -82,12 +84,4 @@
 	     (setq-default c-tab-always-indent nil)
 	     (setq-default indent-tabs-mode nil)
 	     (setq         c-basic-offset 4)))
-
-;;
-;; LART
-;;
-(add-hook 'fortran-mode-hook
-          '(lambda ()
-             (ruler-mode t)))
-
 

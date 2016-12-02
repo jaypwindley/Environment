@@ -32,23 +32,19 @@
 
 
 (defcustom hlasm-comment-char ?\*
-  "*The comment-start character assumed by HLASM mode."
+  "*The comment-start character in HLASM mode."
   :type 'character
-  :group 'asm)
+  :group 'hlasm)
 
 
 (defvar hlasm-mode-syntax-table
   (let ((st (make-syntax-table)))
-    (modify-syntax-entry ?\n "> b" st)
-    (modify-syntax-entry ?/  ". 124b" st)
-    (modify-syntax-entry ?*  ". 23" st)
+    (modify-syntax-entry  ?\*  ">"    st) ; the only true commenter
+    (modify-syntax-entry  ?\n  "> b"  st) ; EOL ends comment
+    (modify-syntax-entry  ?\(  "()"   st) ; parens have customary meaning
+    (modify-syntax-entry  ?'   "\""   st) ; single-quoted strings
     st)
   "Syntax table used while in HLASM mode.")
-
-
-(defvar hlasm-mode-abbrev-table nil
-  "Abbrev table used while in HLASM mode.")
-(define-abbrev-table 'hlasm-mode-abbrev-table ())
 
 
 ;; The typical labeled assembly line looks like
@@ -74,57 +70,54 @@
 (setq tab-stop-list '(9 15 40 71))
 (setq indent-tabs-mode 'nil)
 
+
+;; The key map.
+;;
 (defvar hlasm-mode-map
   (let ((map (make-sparse-keymap)))
-    ;; Note that the comment character isn't set up until asm-mode is called.
-    (define-key map ":"		'asm-colon)
-    (define-key map "\C-c;"	'comment-region)
-    (define-key map "\C-j"	'newline-and-indent)
-    (define-key map "\C-m"	'newline-and-indent)
+
+    ; Keys
+    (define-key map ":"		       'hlasm-colon)
+    (define-key map "\C-c;"	       'comment-region)
+    (define-key map (kbd "<return>")   'newline-and-indent)
+    (define-key map (kbd "<C-return>") 'hlasm-continue)
+
+    ; Menu bar
     (define-key map [menu-bar] (make-sparse-keymap))
-    (define-key map [menu-bar asm-mode] (cons "Asm" map))
+    (define-key map [menu-bar hlasmasm-mode] (cons "HLASM" map))
     (define-key map [comment-region]
       '(menu-item "Comment Region" comment-region
 		  :help "Comment or uncomment each line in the region"))
-    (define-key map [newline-and-indent]
-      '(menu-item "Insert Newline and Indent" newline-and-indent
-		  :help "Insert a newline, then indent according to major mode"))
-    (define-key map [asm-colon]
-      '(menu-item "Insert Colon" asm-colon
-		  :help "Insert a colon; if it follows a label, delete the label's indentation"))
     map)
-  "Keymap for Asm mode.")
+  "Keymap for HLASM mode.")
 
-(defconst asm-font-lock-keywords
+
+;; Bind various syntax elements to the associated font-lock faces.
+;;
+(defconst hlasm-font-lock-keywords
   (append 
    '(("^\\(\\(\\sw\\|\\s_\\)+\\)\\>:?[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
       (1 font-lock-function-name-face) (3 font-lock-keyword-face nil t))
      ;; label started from ".".
-     ("^\\(\\.\\(\\sw\\|\\s_\\)+\\)\\>:"
+     ("^\\(\\(\\sw\\|\\s_\\)+\\)\\>"
       1 font-lock-function-name-face)
+
+     ; Opcode mnemonics
      ("^\\((\\sw+)\\)?\\s +\\(\\(\\.?\\sw\\|\\s_\\)+\\(\\.\\sw+\\)*\\)"
       2 font-lock-keyword-face)
-     ;; directive started from ".".
-     ("^\\(\\.\\(\\sw\\|\\s_\\)+\\)\\>[^:]?"
-      1 font-lock-keyword-face)
-     ;; %register
-     ("%\\sw+" . font-lock-variable-name-face))
+
+     ; Registers are upper-case R followed by 1 or 2 digits.
+     ("R[[:digit:]]\\{1,2\\}" . font-lock-variable-name-face))
    cpp-font-lock-keywords)
   "Additional expressions to highlight in Assembler mode.")
 
 
 (defun hlasm-mode ()
   "Major mode for editing IBM high-level assembler code.
-Features a private abbrev table and the following bindings:
 \\[asm-colon]\toutdent a preceding label, tab to next tab stop.
 \\[tab-to-tab-stop]\ttab to next tab stop.
 \\[asm-newline]\tnewline, then tab to next tab stop.
 \\[asm-comment]\tsmart placement of assembler comments.
-The character used for making comments is set by the variable
-`asm-comment-char' (which defaults to `?\\;').
-Alternatively, you may set this variable in `asm-mode-set-comment-hook',
-which is called near the beginning of mode initialization.
-Turning on Asm mode runs the hook `asm-mode-hook' at the end of initialization.
 Special commands:
 \\{asm-mode-map}"
   
@@ -132,20 +125,15 @@ Special commands:
   (kill-all-local-variables)
   (setq mode-name "IBM HLASM")
   (setq major-mode 'hlasm-mode)
-  (setq local-abbrev-table hasm-mode-abbrev-table)
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(hlasm-font-lock-keywords))
   (set (make-local-variable 'indent-line-function) 'hlasm-indent-line)
 
   (set (make-local-variable 'tab-always-indent) nil)
 
-  (run-hooks 'hasm-mode-set-comment-hook)
-  ;; Make our own local child of asm-mode-map
-  ;; so we can define our own comment character.
   (use-local-map (nconc (make-sparse-keymap) hlasm-mode-map))
   (local-set-key (vector asm-comment-char) 'hlasm-comment)
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
-  (modify-syntax-entry	hlasm-comment-char "< b")
 
   (make-local-variable 'comment-start)
   (setq comment-start (string asm-comment-char))
@@ -158,7 +146,7 @@ Special commands:
   (make-local-variable 'comment-end)
   (setq comment-end "")
   (setq fill-prefix "\t")
-  (run-mode-hooks 'asm-mode-hook))
+  (run-mode-hooks 'hlasm-mode-hook))
 
 (defun asm-indent-line ()
   "Auto-indent the current line."
@@ -186,7 +174,8 @@ Special commands:
    ;; The rest goes at the first tab stop.
    (or (car tab-stop-list) tab-width)))
 
-(defun asm-colon ()
+
+(defun hlasm-colon ()
   "Insert a colon; if it follows a label, delete the label's indentation."
   (interactive)
   (let ((labelp nil))
@@ -199,8 +188,6 @@ Special commands:
       (delete-horizontal-space)
       (tab-to-tab-stop))))
 
-;; Obsolete since Emacs-22.1.
-(defalias 'asm-newline 'newline-and-indent)
 
 (defun asm-comment ()
   "Convert an empty comment to a `larger' kind, or start a new one.

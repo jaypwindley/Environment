@@ -14,6 +14,7 @@
 ;;
 (setq auto-mode-alist
       (append '(("\\.tex$"   . latex-mode))
+	      '(("\\.asm$"   . hlasm-mode))
               '(("\\.h$"     . c++-mode))
               '(("\\.y$"     . c++-mode))
               '(("\\.inl$"   . c++-mode))
@@ -39,6 +40,7 @@
 	 c-mode-hook
 	 c++-mode-hook
 	 fortran-mode-hook
+	 hlasm-mode-hook
 	 python-mode-hook
 	 perl-mode-hook
 	 sh-mode-hook

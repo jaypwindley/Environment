@@ -36,6 +36,16 @@
   :type 'character
   :group 'hlasm)
 
+(defcustom hlasm-cont-column 71
+  "The column where continuation characters go"
+  :type 'integer
+  :group 'hlasm)
+
+(defcustom hlasm-cont-char ?+
+  "Character to use as continuation character"
+  :type 'character
+  :group 'hlasm)
+
 
 (defvar hlasm-mode-syntax-table
   (let ((st (make-syntax-table)))
@@ -67,7 +77,7 @@
 ;; placement. Therefore disable any attempt to use tabs for spacing,
 ;; since improperly tabified code will simply gag the assembler.
 ;;
-(setq tab-stop-list '(9 15 40 71))
+(setq tab-stop-list '(9 15 40 hlasm-continuation-column))
 (setq indent-tabs-mode 'nil)
 
 
@@ -113,13 +123,7 @@
 
 
 (defun hlasm-mode ()
-  "Major mode for editing IBM high-level assembler code.
-\\[asm-colon]\toutdent a preceding label, tab to next tab stop.
-\\[tab-to-tab-stop]\ttab to next tab stop.
-\\[asm-newline]\tnewline, then tab to next tab stop.
-\\[asm-comment]\tsmart placement of assembler comments.
-Special commands:
-\\{asm-mode-map}"
+  "Major mode for editing IBM high-level assembler code."
   
   (interactive)
   (kill-all-local-variables)
@@ -132,11 +136,11 @@ Special commands:
   (set (make-local-variable 'tab-always-indent) nil)
 
   (use-local-map (nconc (make-sparse-keymap) hlasm-mode-map))
-  (local-set-key (vector asm-comment-char) 'hlasm-comment)
+  (local-set-key (vector hlasm-comment-char) 'hlasm-comment)
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
   (make-local-variable 'comment-start)
-  (setq comment-start (string asm-comment-char))
+  (setq comment-start (string hlasm-comment-char))
   (make-local-variable 'comment-add)
   (setq comment-add 1)
   (make-local-variable 'comment-start-skip)
@@ -148,7 +152,7 @@ Special commands:
   (setq fill-prefix "\t")
   (run-mode-hooks 'hlasm-mode-hook))
 
-(defun asm-indent-line ()
+(defun hlasm-indent-line ()
   "Auto-indent the current line."
   (interactive)
   (let* ((savep (point))
@@ -163,7 +167,7 @@ Special commands:
 	(save-excursion (indent-line-to indent))
       (indent-line-to indent))))
 
-(defun asm-calculate-indentation ()
+(defun hlasm-calculate-indentation ()
   (or
    ;; Flush labels to the left margin.
    (and (looking-at "\\(\\sw\\|\\s_\\)+:") 0)
@@ -188,8 +192,16 @@ Special commands:
       (delete-horizontal-space)
       (tab-to-tab-stop))))
 
+(defun hlasm-continue ()
+  "Add continuation character, newline and indent to continuation column"
+  (interactive)
+  (move-to-column hlasm-cont-column t)
+  (insert hlasm-cont-char)
+  (newline)
+  (tab-to-tab-stop) (tab-to-tab-stop))
 
-(defun asm-comment ()
+
+(defun hlasm-comment ()
   "Convert an empty comment to a `larger' kind, or start a new one.
 These are the known comment classes:
    1 -- comment to the right of the code (at the comment-column)
@@ -212,7 +224,7 @@ repeatedly until you are satisfied with the kind of comment."
    ;; Just like `comment-dwim'.  -stef
    ((save-excursion (beginning-of-line) (looking-at "^[ \t]*$"))
     (indent-according-to-mode)
-    (insert asm-comment-char asm-comment-char ?\ ))
+    (insert hlasm-comment-char hlasm-comment-char ?\ ))
 
    ;; Nonblank line w/o comment => start a comment at comment-column.
    ;; Also: point before the comment => jump inside.
@@ -221,12 +233,12 @@ repeatedly until you are satisfied with the kind of comment."
 
    ;; Flush-left or non-empty comment present => just insert character.
    ((or (not comempty) (save-excursion (goto-char comment) (bolp)))
-    (insert asm-comment-char))
+    (insert hlasm-comment-char))
 
    ;; Empty code-level comment => upgrade to next comment level.
    ((save-excursion (goto-char comment) (skip-chars-backward " \t") (bolp))
     (goto-char comment)
-    (insert asm-comment-char)
+    (insert hlasm-comment-char)
     (indent-for-comment))
 
    ;; Empty comment ends non-empty code line => new comment above.
@@ -235,6 +247,6 @@ repeatedly until you are satisfied with the kind of comment."
     (skip-chars-backward " \t")
     (delete-region (point) (line-end-position))
     (beginning-of-line) (insert "\n") (backward-char)
-    (asm-comment)))))
+    (hlasm-comment)))))
 
 (provide 'hlasm-mode)

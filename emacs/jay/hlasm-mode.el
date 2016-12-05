@@ -31,25 +31,26 @@
   :group 'languages)
 
 
-(defcustom hlasm-comment-char ?\*
-  "*The comment-start character in HLASM mode."
-  :type 'character
-  :group 'hlasm)
+;; This is the comment character only when it appears in column 1.
+;; Elsewhere it has the meaning of being the current offset such as from
+;; the start of a CSECT.  Hence we can't really include it in the syntax
+;; table.
+;;
+(defvar hlasm-comment-char ?\*
+  "*The comment-start character in HLASM mode.")
 
-(defcustom hlasm-cont-column 71
-  "The column where continuation characters go"
-  :type 'integer
-  :group 'hlasm)
+(defvar hlasm-cont-column 71
+  "The column where continuation characters go")
 
 (defcustom hlasm-cont-char ?+
   "Character to use as continuation character"
   :type 'character
   :group 'hlasm)
 
+(setq comment-column 40)
 
 (defvar hlasm-mode-syntax-table
   (let ((st (make-syntax-table)))
-    (modify-syntax-entry  ?\*  ">"    st) ; the only true commenter
     (modify-syntax-entry  ?\n  "> b"  st) ; EOL ends comment
     (modify-syntax-entry  ?\(  "()"   st) ; parens have customary meaning
     (modify-syntax-entry  ?'   "\""   st) ; single-quoted strings
@@ -77,8 +78,8 @@
 ;; placement. Therefore disable any attempt to use tabs for spacing,
 ;; since improperly tabified code will simply gag the assembler.
 ;;
-(setq tab-stop-list '(9 15 40 hlasm-continuation-column))
-(setq indent-tabs-mode 'nil)
+(setq tab-stop-list '(9 15 comment-column hlasm-continuation-column))
+(setq-default indent-tabs-mode nil)
 
 
 ;; The key map.
@@ -90,7 +91,7 @@
     (define-key map ":"		       'hlasm-colon)
     (define-key map "\C-c;"	       'comment-region)
     (define-key map (kbd "<return>")   'newline-and-indent)
-    (define-key map (kbd "<C-return>") 'hlasm-continue)
+    (define-key map (kbd "S-<return>") 'hlasm-continue)
 
     ; Menu bar
     (define-key map [menu-bar] (make-sparse-keymap))
@@ -102,29 +103,37 @@
   "Keymap for HLASM mode.")
 
 
-;; Bind various syntax elements to the associated font-lock faces.
+;;
 ;;
 (defconst hlasm-font-lock-keywords
-  (append 
-   '(("^\\(\\(\\sw\\|\\s_\\)+\\)\\>:?[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
-      (1 font-lock-function-name-face) (3 font-lock-keyword-face nil t))
-     ;; label started from ".".
-     ("^\\(\\(\\sw\\|\\s_\\)+\\)\\>"
-      1 font-lock-function-name-face)
+  '(
+    ;; Comment starts with the comment character in column 1 and
+    ;; continues to the end of the line.
+    ("^\*.*$" . font-lock-comment-face)
+    
+    ;; Odds are there will be some JCL in the file.  Make it look like
+    ;; preprocessor directives.
+    ("^/[/\*]\\{1\\}.*$" . font-lock-preprocessor-face)
 
-     ; Opcode mnemonics
-     ("^\\((\\sw+)\\)?\\s +\\(\\(\\.?\\sw\\|\\s_\\)+\\(\\.\\sw+\\)*\\)"
-      2 font-lock-keyword-face)
+    ;; @todo The preceding two elements should override syntax
+    ;; fontification.
+    
 
-     ; Registers are upper-case R followed by 1 or 2 digits.
-     ("R[[:digit:]]\\{1,2\\}" . font-lock-variable-name-face))
-   cpp-font-lock-keywords)
+    ("^\\(\\(\\sw\\|\\s_\\)+\\)\\>[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
+     (1 font-lock-function-name-face)
+     (3 font-lock-keyword-face nil t))
+    
+    ;; Opcode mnemonics
+    ("^\\((\\sw+)\\)?\\s +\\(\\(\\.?\\sw\\|\\s_\\)+\\(\\.\\sw+\\)*\\)"
+     2 font-lock-keyword-face)
+
+    ;; Registers are upper-case R followed by 1 or 2 digits.
+    ("R[[:digit:]]\\{1,2\\}" . font-lock-variable-name-face))
   "Additional expressions to highlight in Assembler mode.")
 
 
 (defun hlasm-mode ()
-  "Major mode for editing IBM high-level assembler code."
-  
+  "Major mode for editing IBM high-level assembler code."  
   (interactive)
   (kill-all-local-variables)
   (setq mode-name "IBM HLASM")
@@ -136,7 +145,7 @@
   (set (make-local-variable 'tab-always-indent) nil)
 
   (use-local-map (nconc (make-sparse-keymap) hlasm-mode-map))
-  (local-set-key (vector hlasm-comment-char) 'hlasm-comment)
+
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
   (make-local-variable 'comment-start)
@@ -224,7 +233,7 @@ repeatedly until you are satisfied with the kind of comment."
    ;; Just like `comment-dwim'.  -stef
    ((save-excursion (beginning-of-line) (looking-at "^[ \t]*$"))
     (indent-according-to-mode)
-    (insert hlasm-comment-char hlasm-comment-char ?\ ))
+    (insert hlasm-comment-char ?\ ))
 
    ;; Nonblank line w/o comment => start a comment at comment-column.
    ;; Also: point before the comment => jump inside.

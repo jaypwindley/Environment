@@ -14,7 +14,7 @@
 ;;
 (setq auto-mode-alist
       (append '(("\\.tex$"   . latex-mode))
-	      '(("\\.asm$"   . hlasm-mode))
+              '(("\\.asm$"   . hlasm-mode))
               '(("\\.h$"     . c++-mode))
               '(("\\.y$"     . c++-mode))
               '(("\\.inl$"   . c++-mode))

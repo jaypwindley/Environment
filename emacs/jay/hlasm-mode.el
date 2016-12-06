@@ -89,7 +89,7 @@
 ;;
 (defvar hlasm-mode-map
   (let ((map (make-sparse-keymap)))
-
+    
     ; Keys
     (define-key map ":"		       'hlasm-colon)
     (define-key map "*"                'hlasm-splat)
@@ -151,26 +151,30 @@
   ; Install the keywords for fontification.
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(hlasm-font-lock-keywords))
-  
-  (set (make-local-variable 'indent-line-function) 'hlasm-indent-line)
 
+  ; Set up indent policy.
+  (set (make-local-variable 'indent-line-function) 'hlasm-indent-line)
   (set (make-local-variable 'tab-always-indent) nil)
 
+  ; Install keymap
   (use-local-map (nconc (make-sparse-keymap) hlasm-mode-map))
-
+  
+  ; Install syntax table.
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
+  ; Set up comment
   (make-local-variable 'comment-column)
-  (setq comment-column hlasm-comment-column)
   (make-local-variable 'comment-start)
-  (setq comment-start (string hlasm-comment-char))
   (make-local-variable 'comment-add)
-  (setq comment-add 1)
   (make-local-variable 'comment-start-skip)
-  (setq comment-start-skip "\\(?:\\s<+\\|/[/*]+\\)[ \t]*")
   (make-local-variable 'comment-end-skip)
-  (setq comment-end-skip "[ \t]*\\(\\s>\\|\\*+/\\)")
   (make-local-variable 'comment-end)
+
+  (setq comment-column hlasm-comment-column)
+  (setq comment-start (string hlasm-comment-char))
+  (setq comment-add 1)
+  (setq comment-start-skip "\\(?:\\s<+\\|/[/*]+\\)[ \t]*")
+  (setq comment-end-skip "[ \t]*\\(\\s>\\|\\*+/\\)")
   (setq comment-end "")
   
   (setq fill-prefix " ")
@@ -187,11 +191,12 @@
 		       (forward-line 0)
 		       (skip-chars-forward " \t")
 		       (if (>= (point) savep) (setq savep nil))
-		       (max (asm-calculate-indentation) 0))
+		       (max (hlasm-calculate-indentation) 0))
 		   (error 0))))
     (if savep
 	(save-excursion (indent-line-to indent))
       (indent-line-to indent))))
+
 
 (defun hlasm-calculate-indentation ()
   (or
@@ -237,7 +242,7 @@
       (setq comment-p (bolp)))
     (if comment-p
         (progn (delete-horizontal-space)
-               (hlasm-comment)
+               (insert "* ")
                (end-of-line))
       (call-interactively 'self-insert-command))))
 

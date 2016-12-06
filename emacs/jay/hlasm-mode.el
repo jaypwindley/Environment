@@ -47,7 +47,10 @@
   :type 'character
   :group 'hlasm)
 
-(setq comment-column 40)
+(defcustom hlasm-comment-column 40
+  "Comments to the right of code start in this column"
+  :type 'integer
+  :group 'hlasm)
 
 (defvar hlasm-mode-syntax-table
   (let ((st (make-syntax-table)))
@@ -89,6 +92,7 @@
 
     ; Keys
     (define-key map ":"		       'hlasm-colon)
+    (define-key map "*"                'hlasm-splat)
     (define-key map "\C-c;"	       'comment-region)
     (define-key map (kbd "<return>")   'newline-and-indent)
     (define-key map (kbd "S-<return>") 'hlasm-continue)
@@ -103,7 +107,8 @@
   "Keymap for HLASM mode.")
 
 
-;;
+;; HLASM syntax is more contextual than syntax tables allow for, so a
+;; lot of the syntax coloring has to be done here.
 ;;
 (defconst hlasm-font-lock-keywords
   '(
@@ -119,6 +124,9 @@
     ;; fontification.
     
 
+    ;; 1. label
+    ;; 2. whitespace
+    ;; 3. operator
     ("^\\(\\(\\sw\\|\\s_\\)+\\)\\>[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
      (1 font-lock-function-name-face)
      (3 font-lock-keyword-face nil t))
@@ -134,12 +142,16 @@
 
 (defun hlasm-mode ()
   "Major mode for editing IBM high-level assembler code."  
+
   (interactive)
   (kill-all-local-variables)
-  (setq mode-name "IBM HLASM")
+  (setq mode-name  "IBM HLASM")
   (setq major-mode 'hlasm-mode)
+
+  ; Install the keywords for fontification.
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(hlasm-font-lock-keywords))
+  
   (set (make-local-variable 'indent-line-function) 'hlasm-indent-line)
 
   (set (make-local-variable 'tab-always-indent) nil)
@@ -148,6 +160,8 @@
 
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
+  (make-local-variable 'comment-column)
+  (setq comment-column hlasm-comment-column)
   (make-local-variable 'comment-start)
   (setq comment-start (string hlasm-comment-char))
   (make-local-variable 'comment-add)
@@ -158,8 +172,11 @@
   (setq comment-end-skip "[ \t]*\\(\\s>\\|\\*+/\\)")
   (make-local-variable 'comment-end)
   (setq comment-end "")
-  (setq fill-prefix "\t")
+  
+  (setq fill-prefix " ")
+
   (run-mode-hooks 'hlasm-mode-hook))
+
 
 (defun hlasm-indent-line ()
   "Auto-indent the current line."
@@ -188,6 +205,11 @@
    (or (car tab-stop-list) tab-width)))
 
 
+;; Many assemblers end labels with a colon.  HLASM does not.  But since
+;; a colon is mostly out of band in HLASM source, it can be used to
+;; signal that the text just entered is meant to be a label.  Where
+;; colons are not mostly out of band is in right-hand comments.
+;;
 (defun hlasm-colon ()
   "Insert a colon; if it follows a label, delete the label's indentation."
   (interactive)
@@ -196,10 +218,29 @@
       (skip-syntax-backward "w_")
       (skip-syntax-backward " ")
       (if (setq labelp (bolp)) (delete-horizontal-space)))
-    (call-interactively 'self-insert-command)
-    (when labelp
-      (delete-horizontal-space)
-      (tab-to-tab-stop))))
+    ; If skipping backward one word and some preceding whitespace leftus
+    ; at beginning-of-line, left-justify the label and skip to the next
+    ; field.  Otherwise this was an internal colon (no pun intended) and
+    ; should just be inserted as a char.
+    (if labelp
+        (progn (delete-horizontal-space)
+               (tab-to-tab-stop))
+      (call-interactively 'self-insert-command))))
+
+
+(defun hlasm-splat ()
+  "Insert an asterisk, either starting a comment or maybe not"
+  (interactive)
+  (let ((comment-p nil))
+    (save-excursion
+      (skip-syntax-backward " ")
+      (setq comment-p (bolp)))
+    (if comment-p
+        (progn (delete-horizontal-space)
+               (hlasm-comment)
+               (end-of-line))
+      (call-interactively 'self-insert-command))))
+
 
 (defun hlasm-continue ()
   "Add continuation character, newline and indent to continuation column"

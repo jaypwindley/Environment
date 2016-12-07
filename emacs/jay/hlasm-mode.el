@@ -162,7 +162,8 @@
   ; Install syntax table.
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
-  ; Set up comment
+  ; Set up comment environment. hlasm-comment needs these to be canonically
+  ; correct.
   (make-local-variable 'comment-column)
   (make-local-variable 'comment-start)
   (make-local-variable 'comment-add)
@@ -257,13 +258,8 @@
 
 
 (defun hlasm-comment ()
-  "Convert an empty comment to a `larger' kind, or start a new one.
-These are the known comment classes:
-   1 -- comment to the right of the code (at the comment-column)
-   2 -- comment on its own line, indented like code
-   3 -- comment on its own line, beginning at the left-most column.
-Suggested usage:  while writing your code, trigger asm-comment
-repeatedly until you are satisfied with the kind of comment."
+  "HLASM comment DWIM."
+  
   (interactive)
   (comment-normalize-vars)
   (let (comempty comment)

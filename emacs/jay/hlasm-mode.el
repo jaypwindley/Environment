@@ -36,10 +36,16 @@
 ;; the start of a CSECT.  Hence we can't really include it in the syntax
 ;; table.
 ;;
-(defvar hlasm-comment-char ?\*
-  "*The comment-start character in HLASM mode.")
+(defconst  hlasm-comment-char ?\*
+  "The comment-start character in HLASM mode.")
 
-(defvar hlasm-cont-column 71
+(defconst hlasm-opcode-column 9
+  "Column where opcodes start.  Allows for 8-character label and some white space")
+
+(defconst hlasm-operand-column 15
+  "Column where operands and continuations start")
+
+(defconst hlasm-cont-column 71
   "The column where continuation characters go")
 
 (defcustom hlasm-cont-char ?+
@@ -81,7 +87,11 @@
 ;; placement. Therefore disable any attempt to use tabs for spacing,
 ;; since improperly tabified code will simply gag the assembler.
 ;;
-(setq tab-stop-list '(9 15 comment-column hlasm-continuation-column))
+(setq tab-stop-list
+      '(hlasm-opcode-column
+        hlasm-operand-column
+        comment-column
+        hlasm-continuation-column))
 (setq-default indent-tabs-mode nil)
 
 
@@ -243,7 +253,7 @@
       (setq comment-p (bolp)))
     (if comment-p
         (progn (delete-horizontal-space)
-               (insert "* ")
+               (hlasm-comment)
                (end-of-line))
       (call-interactively 'self-insert-command))))
 
@@ -271,10 +281,8 @@
 
   (cond
 
-   ;; Blank line?  Then start comment at code indent level.
-   ;; Just like `comment-dwim'.  -stef
+   ;; Blank line?  Start comment in column 1 with comment char
    ((save-excursion (beginning-of-line) (looking-at "^[ \t]*$"))
-    (indent-according-to-mode)
     (insert hlasm-comment-char ?\ ))
 
    ;; Nonblank line w/o comment => start a comment at comment-column.

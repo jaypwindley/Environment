@@ -88,11 +88,11 @@
 ;; since improperly tabified code will simply gag the assembler.
 ;;
 (setq tab-stop-list
-      '(hlasm-opcode-column
-        hlasm-operand-column
-        comment-column
-        hlasm-continuation-column))
-(setq-default indent-tabs-mode nil)
+      (list hlasm-opcode-column
+            hlasm-operand-column
+            comment-column
+            hlasm-cont-column))
+;(setq-default indent-tabs-mode nil)
 
 
 ;; The key map.
@@ -211,10 +211,12 @@
 
 (defun hlasm-calculate-indentation ()
   (or
+   ;; Delimited comments flash to left margin.
+   (and (looking-at "^[ \t]*\\s<") 0)
    ;; Flush labels to the left margin.
    (and (looking-at "\\(\\sw\\|\\s_\\)+:") 0)
-   ;; Same thing for `;;;' comments.
-   (and (looking-at "\\s<\\s<\\s<") 0)
+   ;; Same thing for already-aligned comments
+   (and (looking-at "\\s<") 0)
    ;; Simple `;' comments go to the comment-column.
    (and (looking-at "\\s<\\(\\S<\\|\\'\\)") comment-column)
    ;; The rest goes at the first tab stop.
@@ -227,18 +229,17 @@
 ;; colons are not mostly out of band is in right-hand comments.
 ;;
 (defun hlasm-colon ()
-  "Insert a colon; if it follows a label, delete the label's indentation."
   (interactive)
-  (let ((labelp nil))
+  (let ((label-p nil))
     (save-excursion
       (skip-syntax-backward "w_")
       (skip-syntax-backward " ")
-      (if (setq labelp (bolp)) (delete-horizontal-space)))
+      (if (setq label-p (bolp)) (delete-horizontal-space)))
     ; If skipping backward one word and some preceding whitespace leftus
     ; at beginning-of-line, left-justify the label and skip to the next
     ; field.  Otherwise this was an internal colon (no pun intended) and
     ; should just be inserted as a char.
-    (if labelp
+    (if labelp-
         (progn (delete-horizontal-space)
                (tab-to-tab-stop))
       (call-interactively 'self-insert-command))))
@@ -251,7 +252,7 @@
     (save-excursion
       (skip-syntax-backward " ")
       (setq comment-p (bolp)))
-    (if comment-p
+    (if comment-p        
         (progn (delete-horizontal-space)
                (hlasm-comment)
                (end-of-line))
@@ -264,7 +265,7 @@
   (move-to-column hlasm-cont-column t)
   (insert hlasm-cont-char)
   (newline)
-  (tab-to-tab-stop) (tab-to-tab-stop))
+  (move-to-column (car (cdr tab-stop-list)) t))
 
 
 (defun hlasm-comment ()
@@ -279,7 +280,7 @@
 	(setq comment (comment-search-forward (line-end-position) t)))
       (setq comempty (looking-at "[ \t]*$")))
 
-  (cond
+   (cond
 
    ;; Blank line?  Start comment in column 1 with comment char
    ((save-excursion (beginning-of-line) (looking-at "^[ \t]*$"))

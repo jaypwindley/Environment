@@ -12,6 +12,7 @@
 (linum-mode 1)
 (ruler-mode 1)
 (set-fill-column 100)
+(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 
 (defvar jay-date-time "Date and time for source file time stamps.")
 

@@ -18,6 +18,7 @@
               '(("\\.h$"     . c++-mode))
               '(("\\.y$"     . c++-mode))
               '(("\\.inl$"   . c++-mode))
+              '(("\\.proto$" . protobuf-mode))
               auto-mode-alist))
 
 ;;
@@ -43,6 +44,7 @@
 	 hlasm-mode-hook
 	 python-mode-hook
 	 perl-mode-hook
+	 protobuf-mode-hook
 	 sh-mode-hook
 	 bash-mode-hook
 	 emacs-lisp-mode-hook
@@ -79,6 +81,14 @@
 		(file-name-extension
 		 (file-name-nondirectory buffer-file-name)) "asm")
 	       (load "~/.emacs.d/jay/hlasm-mode")))))
+
+(add-hook 'protobuf-mode-hook
+	  '(lambda()
+	     (cond
+	      ((string-equal
+		(file-name-extension
+		 (file-name-nondirectory buffer-file-name)) "proto")
+	       (load "~/.emacs.d/jay/protobuf-mode")))))
 
 ;;
 ;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup

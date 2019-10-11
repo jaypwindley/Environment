@@ -8,7 +8,7 @@
 ;-----------------------------------------------------------------------
 
 ;-----------------------------------------------------------------------
-;                        Custom Mode Assignments                        
+;                        Custom Mode Assignments
 ;-----------------------------------------------------------------------
 ;; Map some uncommon file suffixes/names to appropriate modes.
 ;;
@@ -46,6 +46,7 @@
 	 perl-mode-hook
 	 protobuf-mode-hook
 	 sh-mode-hook
+	 sql-mode-hook
 	 bash-mode-hook
 	 emacs-lisp-mode-hook
 	 ))
@@ -82,6 +83,10 @@
 		 (file-name-nondirectory buffer-file-name)) "asm")
 	       (load "~/.emacs.d/jay/hlasm-mode")))))
 
+(add-hook 'sql-mode-hook
+	  '(lambda()
+	     (ruler-mode t)))
+
 (add-hook 'protobuf-mode-hook
 	  '(lambda()
 	     (cond
@@ -109,4 +114,3 @@
 	     (setq-default c-tab-always-indent nil)
 	     (setq-default indent-tabs-mode nil)
 	     (setq         c-basic-offset 4)))
-

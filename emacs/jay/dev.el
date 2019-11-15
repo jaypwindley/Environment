@@ -12,7 +12,12 @@
 (linum-mode 1)
 (ruler-mode 1)
 (set-fill-column 100)
-(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
+;; This depends on the prevailing editor practice at different
+;; locations.  Symantec was mosly Emacs, so this worked.  Ripple is
+;; a lot of vim, so the git repo has "blank" lines that are actually
+;; indented.  Make this site-contingent.
+;;
+;;(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
 
 (defvar jay-date-time "Date and time for source file time stamps.")
 

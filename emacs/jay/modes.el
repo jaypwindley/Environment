@@ -113,4 +113,4 @@
 	     (setq-default tab-width 4)
 	     (setq-default c-tab-always-indent nil)
 	     (setq-default indent-tabs-mode nil)
-	     (setq         c-basic-offset 4)))
+	     (setq         c-basic-offset 2)))

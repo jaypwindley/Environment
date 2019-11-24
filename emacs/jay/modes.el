@@ -18,7 +18,7 @@
               '(("\\.h$"     . c++-mode))
               '(("\\.y$"     . c++-mode))
               '(("\\.inl$"   . c++-mode))
-              '(("\\.proto$" . protobuf-mode))
+              '(("\\.ipp$"   . c++-mode))
               auto-mode-alist))
 
 ;;

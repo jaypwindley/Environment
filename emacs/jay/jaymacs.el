@@ -34,7 +34,7 @@
 		(load "~/.emacs.d/jay/colors-light"))
 	       (t (cond (window-system (load "~/.emacs.d/jay/colors-dark"))
 			(t (load "~/.emacs.d/jay/colors-term"))))))
-	((eq emacs-major-version 24)
+	((>= emacs-major-version 24)
 	 (add-to-list 'custom-theme-load-path "~/.emacs.d/jay")
 	 (load-theme 'jaydark t))))
 

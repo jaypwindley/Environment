@@ -57,7 +57,9 @@
 ;; Global Behavior
 ;;-----------------------------------------------------------------------------
 
-(cond (window-system (mwheel-install))) ; if graphical, enable mouse wheel scroll
+(cond (window-system
+       (mwheel-install)
+       (set-frame-size (selected-frame) 120 100)))
 (put 'upcase-region 'disabled nil)      ; allow silent case conversions
 (ruler-mode)                            ; horizontal ruler
 

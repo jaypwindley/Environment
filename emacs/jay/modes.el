@@ -87,14 +87,33 @@
                (load "~/.emacs.d/jay/protobuf-mode")))))
 
 (defun modify-c-style (offset)
+  (interactive "sBasic offset: \n")
   (message "C/C++ default style %s" c-default-style)
   (message "C/C++ indent level %d" offset)
   (setq
    comment-column       66
-   c-basic-offset       2
-   tab-width            2
+   c-basic-offset       offset
+   tab-width            offset
    c-tab-always-indent  nil
    indent-tabs-mode     nil))
+
+(defun namespace-indent-mode ()
+  (interactive)
+  (let ((code (cdr (assoc 'innamespace c-offsets-alist))))
+    (cond ((eq code '+) 'on)
+	  (t 'off))))
+
+(defun toggle-namespace-indent()
+  (interactive)
+  (let* ((prev-state (namespace-indent-mode))
+	 (new-state
+	  (cond ((eq prev-state 'off)
+		 (c-set-offset 'innamespace '+)
+		 "on")
+		((eq prev-state 'on)
+		 (c-set-offset 'innamespace '-)
+		 "off"))))
+    (message "Namespace indent is %s" new-state)))
 
 ;;
 ;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup style, depending on local
@@ -111,8 +130,10 @@
              (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
              (modify-c-style
               (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))
+	     (global-set-key [(C-f5)] 'toggle-namespace-indent)
              (c-set-offset 'case-label    '+)
              (c-set-offset 'innamespace   '-)
+	     (c-set-offset 'inline-open'   0)
              (c-set-offset 'access-label  '/)))
 
 

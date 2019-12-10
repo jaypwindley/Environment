@@ -131,12 +131,13 @@ comment-start                                                                   
 ;
 ; KEY  NONE                    CONTROL                      META
 ; ~~~  ~~~~                    ~~~~~~~                      ~~~~
-; F5   function comments       variable comments            file comments
-; F6   check out file          save file and check in
+; F5   align                                                file comments
+; F6   
 ; F8   expand abbreviation
-; F9   replace string
+; F9   replace string          replace regex
 
-(global-set-key [(f5)]     'jay-function-short-comment)
+(global-set-key [(f5)]     'align)
 (global-set-key [(M-f5)]   'jay-file-header-comment)
 (global-set-key [(f8)]     'dabbrev-expand)
 (global-set-key [(f9)]     'replace-string)
+(global-set-key [(C-f9)]   'replace-regexp)

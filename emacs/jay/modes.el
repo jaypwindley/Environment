@@ -1,15 +1,7 @@
-;-----------------------------------------------------------------------
-; File:              modes.el
-; Description:       Manage Emacs modes
-; Author:            Jay Windley <jwindley>
-; Created:           Sat Feb 15 17:27:15 2014
-; Copyright:         (c) 2014 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
+;;;
+;;; Custom Mode Assignments
+;;;
 
-;-----------------------------------------------------------------------
-;                        Custom Mode Assignments
-;-----------------------------------------------------------------------
 ;; Map some uncommon file suffixes/names to appropriate modes.
 ;;
 (setq auto-mode-alist
@@ -26,30 +18,29 @@
 ;;
 (autoload 'html-mode "html-mode" nil t)
 
-
-;-----------------------------------------------------------------------
-;                        Mode Hooks
-;-----------------------------------------------------------------------
+;;;
+;;; Mode hooks
+;;;
 
 ;;
 ;; For modes that correspond to software development, add a hook to load
 ;; the development functions.  F12 will load it if needed in any mode.
 ;;
 (mapc (lambda (mode-hook)
-	(add-hook mode-hook (lambda () (load "~/.emacs.d/jay/dev"))))
+        (add-hook mode-hook (lambda () (load "~/.emacs.d/jay/dev"))))
       '( asm-mode-hook
-	 c-mode-hook
-	 c++-mode-hook
-	 fortran-mode-hook
-	 hlasm-mode-hook
-	 python-mode-hook
-	 perl-mode-hook
-	 protobuf-mode-hook
-	 sh-mode-hook
-	 sql-mode-hook
-	 bash-mode-hook
-	 emacs-lisp-mode-hook
-	 ))
+         c-mode-hook
+         c++-mode-hook
+         fortran-mode-hook
+         hlasm-mode-hook
+         python-mode-hook
+         perl-mode-hook
+         protobuf-mode-hook
+         sh-mode-hook
+         sql-mode-hook
+         bash-mode-hook
+         emacs-lisp-mode-hook
+         ))
 (global-set-key [(f12)] (lambda () (load-file "~/.emacs.d/jay/dev")))
 
 ;;
@@ -57,18 +48,18 @@
 ;; buffer.
 ;;
 (add-hook 'find-file-hooks
-	  '(lambda ()
-	     (font-lock-mode t)
-	     (font-lock-fontify-buffer)))
+          '(lambda ()
+             (font-lock-mode t)
+             (font-lock-fontify-buffer)))
 
 ;;
 ;; Rulers and fill mode in text.
 ;;
 (add-hook 'text-mode-hook
-	  '(lambda ()
-	     (ruler-mode t)
-	     (turn-on-auto-fill)
-	     (text-mode-hook-identify)))
+          '(lambda ()
+             (ruler-mode t)
+             (turn-on-auto-fill)
+             (text-mode-hook-identify)))
 
 ;;
 ;; Assembly mode gets modified behavior if it's editing IBM HLASM code,
@@ -76,41 +67,52 @@
 ;; invokes Eric Raymond's original assembly mode for GNU-type assemblers.
 ;;
 (add-hook 'asm-mode-hook
-	  '(lambda()
-	     (cond
-	      ((string-equal
-		(file-name-extension
-		 (file-name-nondirectory buffer-file-name)) "asm")
-	       (load "~/.emacs.d/jay/hlasm-mode")))))
+          '(lambda()
+             (cond
+              ((string-equal
+                (file-name-extension
+                 (file-name-nondirectory buffer-file-name)) "asm")
+               (load "~/.emacs.d/jay/hlasm-mode")))))
 
 (add-hook 'sql-mode-hook
-	  '(lambda()
-	     (ruler-mode t)))
+          '(lambda()
+             (ruler-mode t)))
 
 (add-hook 'protobuf-mode-hook
-	  '(lambda()
-	     (cond
-	      ((string-equal
-		(file-name-extension
-		 (file-name-nondirectory buffer-file-name)) "proto")
-	       (load "~/.emacs.d/jay/protobuf-mode")))))
+          '(lambda()
+             (cond
+              ((string-equal
+                (file-name-extension
+                 (file-name-nondirectory buffer-file-name)) "proto")
+               (load "~/.emacs.d/jay/protobuf-mode")))))
+
+(defun modify-c-style (offset)
+  (message "C/C++ default style %s" c-default-style)
+  (message "C/C++ indent level %d" offset)
+  (setq
+   comment-column       66
+   c-basic-offset       2
+   tab-width            2
+   c-tab-always-indent  nil
+   indent-tabs-mode     nil))
 
 ;;
-;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup
-;; style, depending on context, plus tab stops of 4.
+;; C and C++ modes get either Kernighan and Ritchie style or Stroustrup style, depending on local
+;; context.  Then the style gets local modifications, again according to local context.
 ;;
 (add-hook 'c-mode-hook
-	  '(lambda ()
-	     (c-set-style (getenv-with-default "EMACS_C_STYLE" "K&R"))
-	     (setq c-basic-offset 4)
-	     (setq c-tab-always-indent nil)
-	     (setq tab-width 4)
-	     (setq indent-tabs-mode nil)))
+          '(lambda ()
+             (c-set-style (getenv-with-default "EMACS_C_STYLE" "k&r"))
+             (modify-c-style
+              (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))))
 
 (add-hook 'c++-mode-hook
-	  '(lambda ()
-	     (c-set-style (getenv-with-default "EMACS_C_STYLE" "K&R"))
-	     (setq-default tab-width 4)
-	     (setq-default c-tab-always-indent nil)
-	     (setq-default indent-tabs-mode nil)
-	     (setq         c-basic-offset 2)))
+          '(lambda ()
+             (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
+             (modify-c-style
+              (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))
+             (c-set-offset 'case-label    '+)
+             (c-set-offset 'innamespace   '-)
+             (c-set-offset 'access-label  '/)))
+
+

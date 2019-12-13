@@ -9,6 +9,12 @@
 
 (load "~/.emacs.d/jay/funcs")
 
+;;; Load backup environment, if present.  Not all methods of invoking Emacs read the environment as
+;;; set up by bash.
+(let ((env-path "~/.emacs.d/env.el"))
+  (cond ((file-exists-p env-path) (load env-path))
+	(t (defvar ENV nil))))
+(message "Local Emacs Lisp environment %s" ENV)
 
 ;;-----------------------------------------------------------------------------
 ;; Colors and fonts
@@ -59,7 +65,13 @@
 
 (cond (window-system
        (mwheel-install)
-       (set-frame-size (selected-frame) 120 100)))
+       (set-frame-size (selected-frame) 120 69)
+       (add-hook 'after-make-frame-functions
+		 '(lambda (frame)
+		    (set-frame-size frame 120 69)))))
+
+; @todo Figure out how do to this with lexical scoping.
+      
 (put 'upcase-region 'disabled nil)      ; allow silent case conversions
 (ruler-mode)                            ; horizontal ruler
 

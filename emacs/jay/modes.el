@@ -127,7 +127,9 @@
 
 (add-hook 'c++-mode-hook
           '(lambda ()
-             (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
+	     (let ((style (getenv-with-default "EMACS_C_STYLE" "stroustrup")))	       
+	       (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
+	       (message "C++ style %s" style))
              (modify-c-style
               (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))
 	     (global-set-key [(C-f5)] 'toggle-namespace-indent)

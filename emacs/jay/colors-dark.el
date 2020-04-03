@@ -7,6 +7,11 @@
 ;                    All rights reserved.
 ;-----------------------------------------------------------------------
 
+;;
+;;  Warning: this file is deprecated except when using Emacs 23.  For Emacs 25 and later, the style
+;;  changes should be made in jaydark-theme.el
+;;
+
 ;; Active mode line is dark sea green.
 (set-face-background 'modeline "#347c8e")
 

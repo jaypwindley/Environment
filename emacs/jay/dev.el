@@ -7,7 +7,7 @@
 ;                    All rights reserved.
 ;-----------------------------------------------------------------------
 
-(load "~/.emacs.d/jay/funcs")
+(load "funcs")
 
 (linum-mode 1)
 (ruler-mode 1)

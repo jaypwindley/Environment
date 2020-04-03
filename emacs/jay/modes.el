@@ -18,6 +18,12 @@
 ;;
 (autoload 'html-mode "html-mode" nil t)
 
+;;
+;; Use a better C++ markup
+;;
+(require 'modern-cpp-font-lock)
+(modern-c++-font-lock-global-mode t)
+
 ;;;
 ;;; Mode hooks
 ;;;
@@ -27,7 +33,7 @@
 ;; the development functions.  F12 will load it if needed in any mode.
 ;;
 (mapc (lambda (mode-hook)
-        (add-hook mode-hook (lambda () (load "~/.emacs.d/jay/dev"))))
+        (add-hook mode-hook (lambda () (load "dev"))))
       '( asm-mode-hook
          c-mode-hook
          c++-mode-hook
@@ -41,7 +47,7 @@
          bash-mode-hook
          emacs-lisp-mode-hook
          ))
-(global-set-key [(f12)] (lambda () (load-file "~/.emacs.d/jay/dev")))
+(global-set-key [(f12)] (lambda () (load-file "dev")))
 
 ;;
 ;; Every time a file is loaded, turn on font-lock and fontify the
@@ -50,7 +56,7 @@
 (add-hook 'find-file-hooks
           '(lambda ()
              (font-lock-mode t)
-             (font-lock-fontify-buffer)))
+             (font-lock-flush)))
 
 ;;
 ;; Rulers and fill mode in text.
@@ -72,7 +78,7 @@
               ((string-equal
                 (file-name-extension
                  (file-name-nondirectory buffer-file-name)) "asm")
-               (load "~/.emacs.d/jay/hlasm-mode")))))
+               (load "hlasm-mode")))))
 
 (add-hook 'sql-mode-hook
           '(lambda()
@@ -84,7 +90,7 @@
               ((string-equal
                 (file-name-extension
                  (file-name-nondirectory buffer-file-name)) "proto")
-               (load "~/.emacs.d/jay/protobuf-mode")))))
+               (load "protobuf-mode")))))
 
 (defun modify-c-style (offset)
   (interactive "sBasic offset: \n")
@@ -133,6 +139,7 @@
              (modify-c-style
               (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))
 	     (global-set-key [(C-f5)] 'toggle-namespace-indent)
+	     (modern-c++-font-lock-global-mode t)
              (c-set-offset 'case-label    '+)
              (c-set-offset 'innamespace   '-)
 	     (c-set-offset 'inline-open'   0)

@@ -7,7 +7,8 @@
 ;                    All rights reserved.
 ;-----------------------------------------------------------------------
 
-(load "~/.emacs.d/jay/funcs")
+(add-to-list 'load-path "~/.emacs.d/jay")
+(load "funcs")
 
 ;;; Load backup environment, if present.  Not all methods of invoking Emacs read the environment as
 ;;; set up by bash.
@@ -35,11 +36,11 @@
 (let (scheme (getenv "DESKTOP_COLOR_SCHEME"))
   (cond ((eq emacs-major-version 23)
 	 (cond ((eq scheme "dark")
-		(load "~/.emacs.d/jay/colors-dark"))
+		(load "colors-dark"))
 	       ((eq scheme "light")
-		(load "~/.emacs.d/jay/colors-light"))
-	       (t (cond (window-system (load "~/.emacs.d/jay/colors-dark"))
-			(t (load "~/.emacs.d/jay/colors-term"))))))
+		(load "colors-light"))
+	       (t (cond (window-system (load "colors-dark"))
+			(t (load "colors-term"))))))
 	((>= emacs-major-version 24)
 	 (add-to-list 'custom-theme-load-path "~/.emacs.d/jay")
 	 (load-theme 'jaydark t))))
@@ -126,4 +127,4 @@
 ;;
 ;; Set up mode-specific things.
 ;;
-(load "~/.emacs.d/jay/modes")
+(load "modes")

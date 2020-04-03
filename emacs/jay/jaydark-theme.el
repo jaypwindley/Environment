@@ -10,7 +10,8 @@
 (deftheme jaydark
   "Jay's theme for dark color schemes.")
 
-(let ((class '((class color) (min-colors 89)))
+(let ((class '((class color) (min-colors 89) (background dark)))
+      (fg          "gray90" )
       (bg          "#2F4047")
       (bglight     "#003B46")
       (ltfirebrick "#ff8888")
@@ -25,6 +26,7 @@
       (blue        "#0072b2")
       (vermillion  "#d55e00")
       (lime        "#008080")
+      (ltlime      "#7affff")
       (redpurple   "#cc79a7")
       (bluegray    "#848ea9"))
   
@@ -32,22 +34,20 @@
    'jaydark
    `(default
       ((,class
-	( :foreground "gray95"
+	( :foreground ,fg
 	  :background ,bg
 	  :slant      normal
 	  :weight     normal
-	  :height     80
+	  :height     70
 	  :foundry    "unknown"
-	  :family     "DejaVu Sans Mono"))))
+	  :family     "Bitstream Vera Sans Mono"))))
    
-   `(cursor ((,class (
-	  :background ,vermillion))))
+   `(cursor ((,class (:background ,vermillion))))
 
    ;;
    ;; Highlighting faces
    ;;
-   `(fringe ((,class (
-	  :background  ,bglight))))
+   `(fringe ((,class ( :background ,bglight))))
    
    `(highlight ((,class (
 	  :foreground  ,blue
@@ -61,26 +61,20 @@
 	  :background "#e5e5e5"))))
 
    `(isearch ((,class (
-	  :foreground "white"
-	  :background ,vermillion))))
+	   :underline t
+	   :foreground unspecified
+	   :background unspecified))))
 
-   `(lazy-highlight ((,class (
-	  :foreground "white"
-	  :background ,redpurple))))
+   `(lazy-highlight ((,class (:foreground ,yellow))))
 
-   `(trailing-whitespace ((,class (
-	  :background ,vermillion))))
+   `(trailing-whitespace ((,class (:background ,vermillion))))
    
    ;; Mode line faces
-   `(mode-line ((,class (
-	   :box ( :line-width   -1
-		  :style        released-button )
+   `(mode-line-inactive ((,class (
 	   :background ,bglight
 	   :foreground ,ltfirebrick))))
 
-   `(mode-line-inactive ((,class (
-	   :box ( :line-width  -1
-		  :style       released-button)
+   `(mode-line ((,class (
 	   :background "#b0b0b0"
 	   :foreground "black"))))
 
@@ -108,29 +102,37 @@
    ;;
    ;; Font lock faces
    ;;
+   `(font-lock-builtin-face ((,class (:weight bold :color ,white))))
+				      
    `(font-lock-comment-face ((,class (
 	  :slant      italic
-	  :foreground ,ltfirebrick))))
+	  :foreground "gray50"))))
+   
+   `(font-lock-comment-delimiter-face ((,class (:foreground "gray35" ))))
+
+   `(font-lock-doc-face ((,class (
+	  :slant italic
+	  :foreground ,bluegray ))))
    
    `(font-lock-constant-face ((,class (
 	  :weight     bold
 	  :foreground ,lime))))
    
    `(font-lock-function-name-face ((,class (
-	  :foreground ,firebrick
-	  :weight     bold))))
+	  :weight      bold
+	  :foreground ,firebrick ))))
    
    `(font-lock-keyword-face ((,class (
-	  :weight     bold ))))
+	  :weight     bold
+	  :color      ,white ))))
    
-   `(font-lock-string-face ((,class (
-	  :foreground ,wheat))))
+   `(font-lock-string-face ((,class (:foreground ,wheat))))
    
    `(font-lock-type-face ((,class (
 	  :foreground ,white))))
    
    `(font-lock-variable-name-face ((,class (
-	  :foreground "light cyan"))))
+	  :foreground ,ltlime))))
 
    ;; Button and link faces
    `(link         ((,class (:underline t :foreground ,blue))))
@@ -139,7 +141,7 @@
 
   (custom-theme-set-variables
    'jaydark
-   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow
+   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow ,ltlime
 			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"])))
 
 (provide-theme 'jaydark)

@@ -25,7 +25,7 @@
 ;; load it.
 ;;
 (require 'font-lock)                    ; Use Emacs font-lock
-(setq font-lock-maximum-decoration t)   ; ...and use all of it
+(setq font-lock-maximum-decoration 3)   ; ...and use all of it
 
 ;;
 ;; Look for a hint about the desktop color scheme and load the font-lock

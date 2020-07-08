@@ -129,7 +129,7 @@
           '(lambda ()
              (c-set-style (getenv-with-default "EMACS_C_STYLE" "k&r"))
              (modify-c-style
-              (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))))
+              (string-to-number (getenv-with-default "EMACS_C_INDENT" "2")))))
 
 (add-hook 'c++-mode-hook
           '(lambda ()
@@ -137,7 +137,7 @@
 	       (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
 	       (message "C++ style %s" style))
              (modify-c-style
-              (string-to-number (getenv-with-default "EMACS_C_INDENT" "4")))
+              (string-to-number (getenv-with-default "EMACS_C_INDENT" "2")))
 	     (global-set-key [(C-f5)] 'toggle-namespace-indent)
 	     (modern-c++-font-lock-global-mode t)
              (c-set-offset 'case-label    '+)

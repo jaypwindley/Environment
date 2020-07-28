@@ -1,23 +1,20 @@
-;-----------------------------------------------------------------------
-; File:              dev.el
-; Description:       Development Emacs support
-; Author:            Jay Windley <jwindley>
-; Created:           Fri Oct  4 12:06:41 1996
-; Copyright:         (c) 2003 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
-
 (load "funcs")
 
 (linum-mode 1)
 (ruler-mode 1)
 (set-fill-column 80)
-;; This depends on the prevailing editor practice at different
-;; locations.  Symantec was mosly Emacs, so this worked.  Ripple is
-;; a lot of vim, so the git repo has "blank" lines that are actually
-;; indented.  Make this site-contingent.
-;;
-(add-hook 'before-save-hook (lambda () (delete-trailing-whitespace)))
+(require 'clang-format)
+
+(defun format-buffer ()
+  (if equal major-mode "c++-mode"
+      (save-excursion
+	(clang-format-region (point-min) (point-max)))))
+
+(add-hook 'before-save-hook
+	  (lambda ()
+	    (delete-trailing-whitespace)
+     	    ; (forrmat-buffer)
+	    ))
 
 (defvar jay-date-time "Date and time for source file time stamps.")
 
@@ -132,7 +129,7 @@ comment-start                                                                   
 ; KEY  NONE                    CONTROL                      META
 ; ~~~  ~~~~                    ~~~~~~~                      ~~~~
 ; F5   align                                                file comments
-; F6   
+; F6
 ; F8   expand abbreviation
 ; F9   replace string          replace regex
 
@@ -141,3 +138,4 @@ comment-start                                                                   
 (global-set-key [(f8)]     'dabbrev-expand)
 (global-set-key [(f9)]     'replace-string)
 (global-set-key [(C-f9)]   'replace-regexp)
+(global-set-key [?\C-\M-\t] 'format-buffer)

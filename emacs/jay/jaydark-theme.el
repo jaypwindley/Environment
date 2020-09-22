@@ -18,7 +18,7 @@
       (firebrick   "#ff6666")
       (wheat       "#ffffcc")
       (white       "#ffffff")
-      
+
       (orange      "#e69f00")
       (skyblue     "#56b4e9")
       (bluegreen   "#009e73")
@@ -29,7 +29,7 @@
       (ltlime      "#7affff")
       (redpurple   "#cc79a7")
       (bluegray    "#848ea9"))
-  
+
   (custom-theme-set-faces
    'jaydark
    `(default
@@ -41,14 +41,14 @@
 	  :height     70
 	  :foundry    "unknown"
 	  :family     "Bitstream Vera Sans Mono"))))
-   
+
    `(cursor ((,class (:background ,vermillion))))
 
    ;;
    ;; Highlighting faces
    ;;
    `(fringe ((,class ( :background ,bglight))))
-   
+
    `(highlight ((,class (
 	  :foreground  ,blue
 	  :background  "#e5e5e5"))))
@@ -68,7 +68,7 @@
    `(lazy-highlight ((,class (:foreground ,yellow))))
 
    `(trailing-whitespace ((,class (:background ,vermillion))))
-   
+
    ;; Mode line faces
    `(mode-line-inactive ((,class (
 	   :background ,bglight
@@ -103,34 +103,34 @@
    ;; Font lock faces
    ;;
    `(font-lock-builtin-face ((,class (:weight bold :color ,white))))
-				      
+
    `(font-lock-comment-face ((,class (
 	  :slant      italic
 	  :foreground "gray50"))))
-   
+
    `(font-lock-comment-delimiter-face ((,class (:foreground "gray35" ))))
 
    `(font-lock-doc-face ((,class (
 	  :slant italic
 	  :foreground ,bluegray ))))
-   
+
    `(font-lock-constant-face ((,class (
 	  :weight     bold
 	  :foreground ,lime))))
-   
+
    `(font-lock-function-name-face ((,class (
 	  :weight      bold
 	  :foreground ,firebrick ))))
-   
+
    `(font-lock-keyword-face ((,class (
 	  :weight     bold
 	  :color      ,white ))))
-   
+
    `(font-lock-string-face ((,class (:foreground ,wheat))))
-   
+
    `(font-lock-type-face ((,class (
 	  :foreground ,white))))
-   
+
    `(font-lock-variable-name-face ((,class (
 	  :foreground ,ltlime))))
 
@@ -139,11 +139,10 @@
    `(link-visited ((,class (:underline t :foreground ,redpurple)))))
 
 
-  (custom-theme-set-variables
-   'jaydark
-   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow ,ltlime
-			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"])))
+;  (custom-theme-set-variables
+;   'jaydark
+;   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow ,ltlime
+;			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"]))
+)
 
 (provide-theme 'jaydark)
-
-

@@ -1,6 +1,6 @@
 (load "funcs")
 
-(linum-mode 1)
+(line-number-mode 1)
 (ruler-mode 1)
 (set-fill-column 80)
 (require 'clang-format)

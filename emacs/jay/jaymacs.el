@@ -49,8 +49,8 @@
 ;;
 ;; Set transparency
 ;;
-(let ((active-alpha 80)
-       (inactive-alpha 65))
+(let ((active-alpha 85)
+       (inactive-alpha 78))
   (set-frame-parameter (selected-frame) 'alpha
 		       (list active-alpha inactive-alpha))
   (add-to-list 'default-frame-alist
@@ -67,10 +67,10 @@
 
 (cond (window-system
        (mwheel-install)
-       (set-frame-size (selected-frame) 120 69)
+       (set-frame-size (selected-frame) 119 100)
        (add-hook 'after-make-frame-functions
 		 '(lambda (frame)
-		    (set-frame-size frame 120 69)))))
+		    (set-frame-size frame 119 100)))))
 
 ; @todo Figure out how do to this with lexical scoping.
 

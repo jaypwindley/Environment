@@ -133,7 +133,7 @@
 
 (add-hook 'c++-mode-hook
           '(lambda ()
-	     (let ((style (getenv-with-default "EMACS_C_STYLE" "stroustrup")))	       
+	     (let ((style (getenv-with-default "EMACS_C_STYLE" "stroustrup")))
 	       (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
 	       (message "C++ style %s" style))
              (modify-c-style
@@ -142,7 +142,6 @@
 	     (modern-c++-font-lock-global-mode t)
              (c-set-offset 'case-label    '+)
              (c-set-offset 'innamespace   '-)
+	     (c-set-offset 'inextern-lang  0)
 	     (c-set-offset 'inline-open'   0)
              (c-set-offset 'access-label  '/)))
-
-

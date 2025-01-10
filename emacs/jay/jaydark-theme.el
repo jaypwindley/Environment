@@ -38,9 +38,9 @@
 	  :background ,bg
 	  :slant      normal
 	  :weight     normal
-	  :height     80
+	  :height     60
 	  :foundry    "unknown"
-	  :family     "Deja Vu Sans Mono"))))
+	  :family     "Hack"))))
 
    `(cursor ((,class (:background ,vermillion))))
 

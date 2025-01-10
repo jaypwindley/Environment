@@ -31,10 +31,10 @@
 ;;
 ;; Look for a hint about the desktop color scheme and load the font-lock
 ;; definitions that best fit.  For ASCII terminals use a font-lock
-;; "scheme" composed only of different weights.
+;;"scheme" composed only of different weights.
 ;;
 (let (scheme (getenv "DESKTOP_COLOR_SCHEME"))
-  (cond ((eq emacs-major-version 23)
+   (cond ((eq emacs-major-version 23)
 	 (cond ((eq scheme "dark")
 		(load "colors-dark"))
 	       ((eq scheme "light")
@@ -43,6 +43,7 @@
 			(t (load "colors-term"))))))
 	((>= emacs-major-version 24)
 	 (add-to-list 'custom-theme-load-path "~/.emacs.d/jay")
+	 (load-theme 'wombat t)
 	 (load-theme 'jaydark t))))
 
 ;;
@@ -72,7 +73,7 @@
 		    (set-frame-size frame 120 69)))))
 
 ; @todo Figure out how do to this with lexical scoping.
-      
+
 (put 'upcase-region 'disabled nil)      ; allow silent case conversions
 (ruler-mode)                            ; horizontal ruler
 

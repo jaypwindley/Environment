@@ -40,7 +40,7 @@
 	  :weight     normal
 	  :height     80
 	  :foundry    "unknown"
-	  :family     "DejaVu Sans Mono"))))
+	  :family     "Deja Vu Sans Mono"))))
 
    `(cursor ((,class (:background ,vermillion))))
 
@@ -139,9 +139,10 @@
    `(link-visited ((,class (:underline t :foreground ,redpurple)))))
 
 
-  (custom-theme-set-variables
-   'jaydark
-   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow ,ltlime
-			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"])))
+;  (custom-theme-set-variables
+;   'jaydark
+;   `(ansi-color-names-vector ["black" ,vermillion ,bluegreen ,yellow ,ltlime
+;			      ,blue ,redpurple "light cyan" ,lime ,skyblue "white"]))
+)
 
 (provide-theme 'jaydark)

@@ -34,7 +34,7 @@
 ;;
 (mapc (lambda (mode-hook)
         (add-hook mode-hook (lambda () (load "dev"))))
-      '( asm-mode-hook
+      '(asm-mode-hook
          c-mode-hook
          c++-mode-hook
          fortran-mode-hook

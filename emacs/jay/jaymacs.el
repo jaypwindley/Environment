@@ -67,10 +67,10 @@
 
 (cond (window-system
        (mwheel-install)
-       (set-frame-size (selected-frame) 119 100)
+       (set-frame-size (selected-frame) 119 80)
        (add-hook 'after-make-frame-functions
 		 '(lambda (frame)
-		    (set-frame-size frame 119 100)))))
+		    (set-frame-size frame 119 80)))))
 
 ; @todo Figure out how do to this with lexical scoping.
 

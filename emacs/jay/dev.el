@@ -3,6 +3,7 @@
 (line-number-mode 1)
 (ruler-mode 1)
 (set-fill-column 80)
+(setq display-line-numbers t)
 (require 'clang-format)
 
 (defun format-buffer ()

@@ -38,9 +38,9 @@
 	  :background ,bg
 	  :slant      normal
 	  :weight     normal
-	  :height     60
+	  :height     70
 	  :foundry    "unknown"
-	  :family     "Hack"))))
+	  :family     "Droid Sans Mono Dotted for Powerline"))))
 
    `(cursor ((,class (:background ,vermillion))))
 

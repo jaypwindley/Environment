@@ -265,7 +265,7 @@ path_tail_len=15                    # length of path tail.
 # root.
 #
 PS1=\
-"\[${col_exit}\]"'$(bad_exit)'"\[${col_reset}\]\[${col_user}\]\u@\h"\
+"\[${col_exit}\]"'$(bad_exit)'"\[${col_reset}\]\[${col_user}\]${USER}@\h"\
 "\[${col_chroot}\]"'$(chroot_name)'"\[${col_reset}\]"\
 "\[${col_path_prefix}\]:"'$(cwd_prefix)'\
 "\[${col_path_abbr}\]"'$(cwd_abbr $path_tail_len)'\

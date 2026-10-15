@@ -1,12 +1,3 @@
-;-----------------------------------------------------------------------
-; File:              hlasm-mode.el
-; Description:       IBM Assembler H
-; Author:            Jay Windley <jwindley>
-; Created:           Thu Dec  1 15:31:43 2016
-; Copyright:         (c) 2016 Jay Windley
-;                    according to terms of the GNU Public License.
-;-----------------------------------------------------------------------
-
 ;;----------------------------------------------------------------------
 ;;
 ;; This mode started out as post-application mods to Eric Raymond's
@@ -99,7 +90,7 @@
 ;;
 (defvar hlasm-mode-map
   (let ((map (make-sparse-keymap)))
-    
+
     ; Keys
     (define-key map ":"		       'hlasm-colon)
     (define-key map "*"                'hlasm-splat)
@@ -125,14 +116,14 @@
     ;; Comment starts with the comment character in column 1 and
     ;; continues to the end of the line.
     ("^\*.*$" . font-lock-comment-face)
-    
+
     ;; Odds are there will be some JCL in the file.  Make it look like
     ;; preprocessor directives.
     ("^/[/\*]\\{1\\}.*$" . font-lock-preprocessor-face)
 
     ;; @todo The preceding two elements should override syntax
     ;; fontification.
-    
+
 
     ;; 1. label
     ;; 2. whitespace
@@ -140,7 +131,7 @@
     ("^\\(\\(\\sw\\|\\s_\\)+\\)\\>[ \t]*\\(\\sw+\\(\\.\\sw+\\)*\\)?"
      (1 font-lock-function-name-face)
      (3 font-lock-keyword-face nil t))
-    
+
     ;; Opcode mnemonics
     ("^\\((\\sw+)\\)?\\s +\\(\\(\\.?\\sw\\|\\s_\\)+\\(\\.\\sw+\\)*\\)"
      2 font-lock-keyword-face)
@@ -151,7 +142,7 @@
 
 
 (defun hlasm-mode ()
-  "Major mode for editing IBM high-level assembler code."  
+  "Major mode for editing IBM high-level assembler code."
 
   (interactive)
   (kill-all-local-variables)
@@ -168,7 +159,7 @@
 
   ; Install keymap
   (use-local-map (nconc (make-sparse-keymap) hlasm-mode-map))
-  
+
   ; Install syntax table.
   (set-syntax-table (make-syntax-table hlasm-mode-syntax-table))
 
@@ -187,7 +178,7 @@
   (setq comment-start-skip "\\(?:\\s<+\\|/[/*]+\\)[ \t]*")
   (setq comment-end-skip "[ \t]*\\(\\s>\\|\\*+/\\)")
   (setq comment-end "")
-  
+
   (setq fill-prefix " ")
 
   (run-mode-hooks 'hlasm-mode-hook))
@@ -252,7 +243,7 @@
     (save-excursion
       (skip-syntax-backward " ")
       (setq comment-p (bolp)))
-    (if comment-p        
+    (if comment-p
         (progn (delete-horizontal-space)
                (hlasm-comment)
                (end-of-line))
@@ -270,7 +261,7 @@
 
 (defun hlasm-comment ()
   "HLASM comment DWIM."
-  
+
   (interactive)
   (comment-normalize-vars)
   (let (comempty comment)

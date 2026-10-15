@@ -1,11 +1,4 @@
-;-----------------------------------------------------------------------
-; File:              jaydark-theme.el
-; Description:       Newfangled theme for dark colors
-; Author:            Jay Windley <jwindley>
-; Created:           Tue Mar  3 23:27:56 2015
-; Copyright:         (c) 2015 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
+;;; -*- lexical-binding: t; -*-
 
 (deftheme jaydark
   "Jay's theme for dark color schemes.")

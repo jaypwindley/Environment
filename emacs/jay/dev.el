@@ -1,3 +1,5 @@
+;;; -*- lexical-binding: t; -*-
+
 (load "funcs")
 
 (line-number-mode 1)

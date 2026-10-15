@@ -1,11 +1,4 @@
-;-----------------------------------------------------------------------
-; File:              jaymacs.el
-; Description:       GNU Emacs startup code
-; Author:            Jay Windley <jwindley>
-; Created:           Aug 27 13:58:50 1996
-; Copyright:         (c) 1996-2014 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
+;;; -*- lexical-binding: t; -*-
 
 (add-to-list 'load-path "~/.emacs.d/jay")
 (load "funcs")

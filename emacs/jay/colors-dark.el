@@ -1,11 +1,4 @@
-;-----------------------------------------------------------------------
-; File:              colors-dark.el
-; Description:       Emacs colors for dark desktop schemes
-; Author:            Jay Windley <jwindley>
-; Created:           Sat Feb 15 13:49:11 2014
-; Copyright:         (c) 2014 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
+;;; -*- lexical-binding: t; -*-
 
 ;;
 ;;  Warning: this file is deprecated except when using Emacs 23.  For Emacs 25 and later, the style
@@ -46,7 +39,7 @@
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
+
      nil) ))
 
  ;; Comments are light firebrick italics
@@ -55,9 +48,9 @@
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
+
       ( :foreground        "#ff8888"
-        :slant             italic)) ))               
+        :slant             italic)) ))
 
  ;; Functions are bold firebrick
  ;;
@@ -65,7 +58,7 @@
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
+
       ( :foreground        "#ff6666"
         :weight            bold)) ))
 
@@ -73,7 +66,7 @@
  ;;
  '(font-lock-keyword-face
    (( t
-      
+
       ( :weight            bold)) ))
 
  ;; Strings are wheat colored
@@ -82,7 +75,7 @@
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
+
       ( :foreground        "#ffffcc")) ))
 
  ;; User-defined types are bright white
@@ -91,7 +84,7 @@
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
+
       ( :foreground        "white")) ))
 
  ;; Negation characters are emboldened.
@@ -102,13 +95,12 @@
        (background         dark))
 
       ( :weight            bold)) ))
- 
+
  ;; Need to see this first
  ;;
  '(font-lock-variable-name-face
    (( ((class              color)
        (min-colors         88)
        (background         dark))
-      
-      ( :foreground        "light cyan")) )))
 
+      ( :foreground        "light cyan")) )))

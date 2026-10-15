@@ -1,11 +1,4 @@
-;-----------------------------------------------------------------------
-; File:              funcs.el
-; Description:       Functions common to all configurations
-; Author:            Jay Windley <jwindley>
-; Created:           Sat Feb 15 17:05:10 2014
-; Copyright:         (c) 2014 Jay Windley
-;                    All rights reserved.
-;-----------------------------------------------------------------------
+;;; -*- lexical-binding: t; -*-
 
 (defun getenv-with-default (var default)
   "Dereference an environment variable or use default"
@@ -20,4 +13,3 @@
 		((numberp val) (number-to-string val))
 		(t val))))
      (t default))))
-

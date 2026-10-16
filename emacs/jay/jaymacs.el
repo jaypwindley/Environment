@@ -50,17 +50,15 @@
 	       (list 'alpha active-alpha inactive-alpha)))
 
 
-
-
-
-
 ;;-----------------------------------------------------------------------------
 ;; Global Behavior
 ;;-----------------------------------------------------------------------------
 
 (cond (window-system
        (mwheel-install)
-       (set-frame-size (selected-frame) 119 80)
+       (set-frame-size (selected-frame)
+		       119
+		       (string-to-number (getenv-with-default "EMACS_FRAME_HEIGHT" 70)))
        (add-hook 'after-make-frame-functions
 		 '(lambda (frame)
 		    (set-frame-size frame 119 80)))))

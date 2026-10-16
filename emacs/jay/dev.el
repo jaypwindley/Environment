@@ -1,4 +1,4 @@
-;;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding:t; -*-
 
 (load "funcs")
 
@@ -9,14 +9,20 @@
 (require 'clang-format)
 
 (defun format-buffer ()
-  (if equal major-mode "c++-mode"
-      (save-excursion
-	(clang-format-region (point-min) (point-max)))))
+  "Maybe auto-format a C++ buffer."
+  (if (eq major-mode 'c++-mode)
+      (if (or (and (boundp 'clang-auto-format) clang-auto-format)
+	      (equal (getenv-with-default "EMACS_CLANG_FORMAT" "no") "yes"))
+	  (progn
+	    (message "Running clang-format on buffer")
+	    (save-excursion
+              (clang-format-region (point-min) (point-max)))))))
+
 
 (add-hook 'before-save-hook
 	  (lambda ()
 	    (delete-trailing-whitespace)
-     	    ; (forrmat-buffer)
+     	    (format-buffer)
 	    ))
 
 (defvar jay-date-time "Date and time for source file time stamps.")

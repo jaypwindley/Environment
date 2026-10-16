@@ -31,7 +31,8 @@
 	  :background ,bg
 	  :slant      normal
 	  :weight     normal
-	  :height     70
+	  :height     ,(string-to-number
+			(getenv-with-default "EMACS_FONT_HEIGHT" 70))
 	  :foundry    "unknown"
 	  :family     "Droid Sans Mono Dotted for Powerline"))))
 

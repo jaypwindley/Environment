@@ -138,6 +138,7 @@
 	     (let ((style (getenv-with-default "EMACS_C_STYLE" "stroustrup")))
 	       (c-set-style (getenv-with-default "EMACS_C_STYLE" "stroustrup"))
 	       (message "C++ style %s" style))
+	     (put 'clang-auto-format 'safe-local-variable #'booleanp)
              (modify-c-style
               (string-to-number (getenv-with-default "EMACS_C_INDENT" "2")))
 	     (global-set-key [(C-f5)] 'toggle-namespace-indent)

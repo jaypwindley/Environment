@@ -97,8 +97,6 @@
 			    ("lucidatypewriter" "helv" "helvetica" "arial" "fixed"))))
  )
 
-'(safe-local-variable-values '((clang-auto-format . t)))
-
 ;;
 ;; Global key bindings
 ;;
